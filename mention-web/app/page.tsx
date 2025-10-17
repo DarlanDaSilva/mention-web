@@ -2,47 +2,65 @@ export default function Home() {
   return (
     <div
       style={{
-        fontFamily: "Arial",
+        fontFamily: "Arial, sans-serif",
         textAlign: "center",
-        maxWidth: 400,
-        margin: "80px auto 100px auto",
-        padding: "0 10px",
+        padding: "80px 20px 120px 20px", // espaço embaixo para botão fixo
+        maxWidth: 600,
+        margin: "0 auto",
       }}
     >
-      {/* Logo */}
+      {/* Logo centralizada */}
       <img
-        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
+        src="https://i.ibb.co/GQK0jNx5/20251017-003813-0000.png"
         alt="Mention Logo"
-        style={{ width: 100, marginBottom: 10 }}
+        style={{ width: 150, margin: "0 auto 20px auto", display: "block" }}
       />
-      <h1 style={{ margin: 0 }}>Mention</h1>
-      <p style={{ color: "#555", margin: "10px 0 20px" }}>
-        Bem-vindo ao Mention! Um app para compartilhar fotos, posts e muito mais.
+
+      {/* Descrição */}
+      <p style={{ color: "#555", fontSize: 16, lineHeight: "1.6", marginBottom: 20 }}>
+        <strong>Mention</strong> — compartilhe fotos, momentos e histórias com o mundo.
       </p>
-      <a
-        href="https://linktr.ee/DarlanDaSilvaOfc"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: "inline-block",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          padding: "12px 24px",
-          borderRadius: 8,
-          textDecoration: "none",
-          fontWeight: "bold",
-        }}
-      >
-        📱 Baixar Mention
-      </a>
+      <p style={{ color: "#555", fontSize: 14, lineHeight: "1.6" }}>
+        O Mention é uma rede social feita para quem gosta de ser visto e interagir. 
+        Compartilhe suas melhores fotos, receba comentários, curta momentos e mostre seu estilo. 
+        Um espaço leve, divertido e cheio de conexões reais, onde cada publicação é uma nova oportunidade de chamar atenção e brilhar.
+      </p>
+
+      {/* Botão e rodapé fixos */}
       <div
         style={{
-          marginTop: 30,
-          fontSize: 12,
-          color: "#777",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          background: "#fff",
+          padding: 10,
+          boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        © Mention — Todos os direitos reservados
+        <a
+          href="https://linktr.ee/DarlanDaSilvaOfc"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            backgroundColor: "#0070f3",
+            color: "#fff",
+            padding: "12px 24px",
+            borderRadius: 8,
+            textDecoration: "none",
+            fontWeight: "bold",
+            width: "90%",
+            textAlign: "center",
+          }}
+        >
+          📱 Baixar Mention
+        </a>
+        <span style={{ fontSize: 12, color: "#777" }}>© Mention — Todos os direitos reservados</span>
       </div>
     </div>
   );
