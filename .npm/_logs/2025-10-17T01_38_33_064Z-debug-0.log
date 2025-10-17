@@ -1,0 +1,18 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/npm
+1 info using npm@11.6.0
+2 info using node@v24.9.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/mention-web/.npmrc
+5 silly config load:file:/data/data/com.termux/files/home/.npmrc
+6 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+7 verbose title npm run dev
+8 verbose argv "run" "dev"
+9 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_38_33_064Z-
+10 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_38_33_064Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /data/data/com.termux/files/home/mention-web
+13 verbose os Linux 5.10.177-android12-9-00001-g219d8dfbba07-ab10551810
+14 verbose node v24.9.0
+15 verbose npm  v11.6.0
+16 verbose exit 0
+17 info ok

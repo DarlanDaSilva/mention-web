@@ -1,0 +1,34 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@11.6.0
+2 info using node@v24.9.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/.npmrc
+5 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+6 verbose title npm exec create-next-app mention-web
+7 verbose argv "exec" "--" "create-next-app" "mention-web"
+8 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_09_14_212Z-
+9 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_09_14_212Z-debug-0.log
+10 silly logfile done cleaning log files
+11 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+12 http fetch GET 200 https://registry.npmjs.org/create-next-app 435ms (cache revalidated)
+13 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+14 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+15 silly idealTree buildDeps
+16 silly fetch manifest create-next-app@15.5.5
+17 silly packumentCache full:https://registry.npmjs.org/create-next-app cache-miss
+18 http fetch GET 200 https://registry.npmjs.org/create-next-app 1368ms (cache miss)
+19 silly packumentCache full:https://registry.npmjs.org/create-next-app set size:undefined disposed:false
+20 silly placeDep ROOT create-next-app@15.5.5 OK for:  want: 15.5.5
+21 silly reify moves {}
+22 silly audit bulk request { 'create-next-app': [ '15.5.5' ] }
+23 http cache create-next-app@https://registry.npmjs.org/create-next-app/-/create-next-app-15.5.5.tgz 0ms (cache hit)
+24 silly tarball no local data for create-next-app@https://registry.npmjs.org/create-next-app/-/create-next-app-15.5.5.tgz. Extracting by manifest.
+25 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 448ms
+26 silly audit report {}
+27 http fetch GET 200 https://registry.npmjs.org/create-next-app/-/create-next-app-15.5.5.tgz 643ms (cache miss)
+28 verbose cwd /data/data/com.termux/files/home
+29 verbose os Linux 5.10.177-android12-9-00001-g219d8dfbba07-ab10551810
+30 verbose node v24.9.0
+31 verbose npm  v11.6.0
+32 verbose exit 0
+33 info ok

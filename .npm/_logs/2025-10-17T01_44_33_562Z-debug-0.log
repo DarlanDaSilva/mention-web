@@ -1,0 +1,33 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/npm
+1 info using npm@11.6.0
+2 info using node@v24.9.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/mention-web/.npmrc
+5 silly config load:file:/data/data/com.termux/files/home/.npmrc
+6 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+7 verbose title npm run dev
+8 verbose argv "run" "dev"
+9 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_44_33_562Z-
+10 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_44_33_562Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 verbose stack JSONParseError: Invalid package.json: JSONParseError: Expected ',' or '}' after property value in JSON at position 109 (line 7 column 5) while parsing near "...ev\": \"next dev\"\n    \"build\": \"next build..."
+13 verbose stack     at parse (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/@npmcli/package-json/lib/read-package.js:19:21)
+13 verbose stack     at PackageJson.fromJSON (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/@npmcli/package-json/lib/index.js:163:22)
+13 verbose stack     at PackageJson.load (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/@npmcli/package-json/lib/index.js:158:17)
+13 verbose stack     at async PackageJson.normalize (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/@npmcli/package-json/lib/index.js:118:5)
+13 verbose stack     at async #run (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/commands/run.js:90:13)
+13 verbose stack     at async RunScript.exec (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/commands/run.js:44:7)
+13 verbose stack     at async Npm.exec (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/npm.js:208:9)
+13 verbose stack     at async module.exports (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/cli/entry.js:60:5)
+14 error code EJSONPARSE
+15 error JSON.parse Invalid package.json: JSONParseError: Expected ',' or '}' after property value in JSON at position 109 (line 7 column 5) while parsing near "...ev\": \"next dev\"\n    \"build\": \"next build..."
+16 error JSON.parse Failed to parse JSON data.
+16 error JSON.parse Note: package.json must be actual JSON, not just JavaScript.
+17 verbose cwd /data/data/com.termux/files/home/mention-web
+18 verbose os Linux 5.10.177-android12-9-00001-g219d8dfbba07-ab10551810
+19 verbose node v24.9.0
+20 verbose npm  v11.6.0
+21 verbose exit 1
+22 verbose code 1
+23 error A complete log of this run can be found in: /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_44_33_562Z-debug-0.log

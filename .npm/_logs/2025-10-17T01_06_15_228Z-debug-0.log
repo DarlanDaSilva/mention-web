@@ -1,0 +1,28 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@11.6.0
+2 info using node@v24.9.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/.npmrc
+5 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+6 verbose title npm exec create-next-app mention-web
+7 verbose argv "exec" "--" "create-next-app" "mention-web"
+8 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_06_15_228Z-
+9 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_06_15_228Z-debug-0.log
+10 silly logfile done cleaning log files
+11 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+12 http fetch GET 200 https://registry.npmjs.org/create-next-app 1201ms (cache revalidated)
+13 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+14 silly packumentCache heap:1174405120 maxSize:293601280 maxEntrySize:146800640
+15 verbose stack Error: canceled
+15 verbose stack     at exec (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/libnpmexec/lib/index.js:289:19)
+15 verbose stack     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+15 verbose stack     at async Npm.exec (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/npm.js:208:9)
+15 verbose stack     at async module.exports (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/cli/entry.js:60:5)
+16 error canceled
+17 verbose cwd /data/data/com.termux/files/home
+18 verbose os Linux 5.10.177-android12-9-00001-g219d8dfbba07-ab10551810
+19 verbose node v24.9.0
+20 verbose npm  v11.6.0
+21 verbose exit 1
+22 verbose code 1
+23 error A complete log of this run can be found in: /data/data/com.termux/files/home/.npm/_logs/2025-10-17T01_06_15_228Z-debug-0.log
