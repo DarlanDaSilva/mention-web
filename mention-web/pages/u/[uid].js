@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
@@ -50,9 +51,25 @@ export default function Usuario() {
     );
   }
 
+  const description = userData.biografia || `@${userData.autor}`;
+
   return (
     <>
+      {/* 🔹 Meta tags para pré-visualização */}
+      <Head>
+        <title>{userData.nome} (@{userData.autor}) — Mention</title>
+        <meta property="og:title" content={userData.nome} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={userData.foto} />
+        <meta property="og:type" content="profile" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={userData.nome} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={userData.foto} />
+      </Head>
+
       <Header />
+
       <div
         style={{
           fontFamily: "Arial",
@@ -76,9 +93,7 @@ export default function Usuario() {
           }}
         />
 
-        {/* Texto @usuario reduzido */}
-        <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
-
+        {/* Nome e verificação */}
         <h2
           style={{
             display: "flex",
@@ -98,7 +113,11 @@ export default function Usuario() {
           )}
         </h2>
 
-        <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
+        {/* Usuário */}
+        <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
+
+        {/* Biografia */}
+        {userData.biografia && <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>}
 
         {/* Estatísticas */}
         <div
@@ -168,7 +187,7 @@ export default function Usuario() {
   );
 }
 
-// 🔵 Cabeçalho fixo no canto esquerdo
+// 🔵 Cabeçalho fixo
 function Header() {
   return (
     <div
@@ -196,4 +215,4 @@ function Header() {
       <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Mention</span>
     </div>
   );
-          }
+            }
