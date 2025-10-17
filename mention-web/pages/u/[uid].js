@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Configuração do seu Firebase
+// 🔧 Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -57,11 +57,12 @@ export default function Usuario() {
         style={{
           fontFamily: "Arial",
           maxWidth: 400,
-          margin: "80px auto 30px auto",
+          margin: "80px auto 100px auto", // espaço para o botão fixo
           textAlign: "center",
           padding: "0 10px",
         }}
       >
+        {/* Foto do usuário */}
         <img
           src={userData.foto}
           alt="Foto do perfil"
@@ -75,7 +76,8 @@ export default function Usuario() {
           }}
         />
 
-        <h3 style={{ margin: "5px 0", color: "#444" }}>@{userData.autor}</h3>
+        {/* Texto @usuario reduzido */}
+        <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
 
         <h2
           style={{
@@ -88,12 +90,17 @@ export default function Usuario() {
         >
           {userData.nome}
           {userData.verify === "SIM" && (
-            <span style={{ color: "#0070f3", fontSize: 20 }}>✔️</span>
+            <img
+              src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
+              alt="Verificado"
+              style={{ width: 20, height: 20 }}
+            />
           )}
         </h2>
 
         <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
 
+        {/* Estatísticas */}
         <div
           style={{
             display: "flex",
@@ -117,7 +124,24 @@ export default function Usuario() {
             <p style={{ margin: 0 }}>Seguindo</p>
           </div>
         </div>
+      </div>
 
+      {/* Botão fixo embaixo */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          background: "#fff",
+          padding: 10,
+          boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
         <a
           href="https://linktr.ee/DarlanDaSilvaOfc"
           target="_blank"
@@ -130,16 +154,21 @@ export default function Usuario() {
             borderRadius: 8,
             textDecoration: "none",
             fontWeight: "bold",
+            width: "90%",
+            textAlign: "center",
           }}
         >
           📱 Baixar Mention
         </a>
+        <span style={{ fontSize: 12, color: "#777" }}>
+          © Mention — Todos os direitos reservados
+        </span>
       </div>
     </>
   );
 }
 
-// 🔵 Cabeçalho fixo Mention
+// 🔵 Cabeçalho fixo no canto esquerdo
 function Header() {
   return (
     <div
@@ -149,7 +178,9 @@ function Header() {
         background: "#0070f3",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        gap: 10,
+        padding: "0 15px",
         position: "fixed",
         top: 0,
         left: 0,
@@ -158,13 +189,11 @@ function Header() {
       }}
     >
       <img
-        src="https://i.ibb.co/93HK9JWG/20251015-223753-0000.png"
+        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
         alt="Mention Logo"
-        style={{ height: 34, marginRight: 10 }}
+        style={{ height: 34 }}
       />
       <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Mention</span>
     </div>
   );
-}
-
-
+          }
