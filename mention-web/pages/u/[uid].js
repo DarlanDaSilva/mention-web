@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Configuração do Firebase
+// 🔧 Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -15,39 +13,17 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// Evita inicialização duplicada
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
 
-export default function Usuario() {
-  const router = useRouter();
-  const { uid } = router.query;
-  const [userData, setUserData] = useState(null);
-
-  useEffect(() => {
-    if (!uid) return;
-
-    const userRef = ref(db, "usuarios/" + uid);
-    get(userRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        setUserData(snapshot.val());
-      } else {
-        setUserData("notfound");
-      }
-    });
-  }, [uid]);
-
-  if (!uid || userData === null) {
-    return <p style={{ textAlign: "center", marginTop: "60px" }}>Carregando...</p>;
-  }
-
-  if (userData === "notfound") {
+export default function Usuario({ userData }) {
+  if (!userData) {
     return (
-      <>
-        <Header />
-        <h2 style={{ textAlign: "center", marginTop: "80px" }}>
-          Usuário não encontrado 😢
-        </h2>
-      </>
+      <p style={{ textAlign: "center", marginTop: "60px" }}>
+        Usuário não encontrado 😢
+      </p>
     );
   }
 
@@ -55,15 +31,14 @@ export default function Usuario() {
 
   return (
     <>
-      {/* 🔹 Meta tags para pré-visualização */}
       <Head>
         <title>{userData.nome} (@{userData.autor}) — Mention</title>
-        <meta property="og:title" content={userData.nome} />
+        <meta property="og:title" content={`${userData.nome} (@${userData.autor})`} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={userData.foto} />
         <meta property="og:type" content="profile" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={userData.nome} />
+        <meta name="twitter:title" content={`${userData.nome} (@${userData.autor})`} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={userData.foto} />
       </Head>
@@ -74,12 +49,11 @@ export default function Usuario() {
         style={{
           fontFamily: "Arial",
           maxWidth: 400,
-          margin: "80px auto 100px auto", // espaço para o botão fixo
+          margin: "80px auto 100px auto",
           textAlign: "center",
           padding: "0 10px",
         }}
       >
-        {/* Foto do usuário */}
         <img
           src={userData.foto}
           alt="Foto do perfil"
@@ -93,16 +67,7 @@ export default function Usuario() {
           }}
         />
 
-        {/* Nome e verificação */}
-        <h2
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            flexWrap: "wrap",
-          }}
-        >
+        <h2 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
           {userData.nome}
           {userData.verify === "SIM" && (
             <img
@@ -113,13 +78,12 @@ export default function Usuario() {
           )}
         </h2>
 
-        {/* Usuário */}
         <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
 
-        {/* Biografia */}
-        {userData.biografia && <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>}
+        {userData.biografia && (
+          <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
+        )}
 
-        {/* Estatísticas */}
         <div
           style={{
             display: "flex",
@@ -145,7 +109,6 @@ export default function Usuario() {
         </div>
       </div>
 
-      {/* Botão fixo embaixo */}
       <div
         style={{
           position: "fixed",
@@ -187,7 +150,26 @@ export default function Usuario() {
   );
 }
 
-// 🔵 Cabeçalho fixo
+// 🔵 SSR — busca dados direto no servidor (necessário para preview funcionar)
+export async function getServerSideProps(context) {
+  const { uid } = context.query;
+
+  try {
+    const db = getDatabase();
+    const snapshot = await get(ref(db, "usuarios/" + uid));
+
+    if (!snapshot.exists()) {
+      return { props: { userData: null } };
+    }
+
+    return { props: { userData: snapshot.val() } };
+  } catch (e) {
+    console.error(e);
+    return { props: { userData: null } };
+  }
+}
+
+// 🔹 Cabeçalho
 function Header() {
   return (
     <div
@@ -197,7 +179,7 @@ function Header() {
         background: "#0070f3",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         gap: 10,
         padding: "0 15px",
         position: "fixed",
@@ -208,11 +190,10 @@ function Header() {
       }}
     >
       <img
-        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
+        src="https://i.ibb.co/GQK0jNx5/20251017-003813-0000.png"
         alt="Mention Logo"
         style={{ height: 34 }}
       />
-      <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Mention</span>
     </div>
   );
-            }
+}
