@@ -2,7 +2,7 @@ import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Configuração Firebase
+// 🔧 Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -13,7 +13,6 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
-// Evita inicialização duplicada
 if (!getApps().length) {
   initializeApp(firebaseConfig);
 }
@@ -31,6 +30,7 @@ export default function Usuario({ userData }) {
 
   return (
     <>
+      {/* 🔹 Meta tags para pré-visualização */}
       <Head>
         <title>{userData.nome} (@{userData.autor}) — Mention</title>
         <meta property="og:title" content={`${userData.nome} (@${userData.autor})`} />
@@ -48,67 +48,93 @@ export default function Usuario({ userData }) {
       <div
         style={{
           fontFamily: "Arial",
-          maxWidth: 400,
+          maxWidth: 500,
           margin: "80px auto 100px auto",
-          textAlign: "center",
-          padding: "0 10px",
+          padding: "0 20px",
         }}
       >
-        <img
-          src={userData.foto}
-          alt="Foto do perfil"
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: "50%",
-            objectFit: "cover",
-            marginBottom: 10,
-            border: "3px solid #0070f3",
-          }}
-        />
-
-        <h2 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-          {userData.nome}
-          {userData.verify === "SIM" && (
-            <img
-              src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
-              alt="Verificado"
-              style={{ width: 20, height: 20 }}
-            />
-          )}
-        </h2>
-
-        <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
-
-        {userData.biografia && (
-          <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
-        )}
-
+        {/* 📸 Foto + Nome + @usuario */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-around",
-            background: "#f3f3f3",
-            padding: 10,
-            borderRadius: 10,
+            alignItems: "center",
+            gap: 15,
+            marginBottom: 15,
+          }}
+        >
+          <img
+            src={userData.foto}
+            alt="Foto do perfil"
+            style={{
+              width: 90,
+              height: 90,
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: "2px solid #0070f3",
+            }}
+          />
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                flexWrap: "wrap",
+              }}
+            >
+              <h2 style={{ margin: 0, fontSize: 20 }}>{userData.nome}</h2>
+              {userData.verify === "SIM" && (
+                <img
+                  src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
+                  alt="Verificado"
+                  style={{ width: 20, height: 20 }}
+                />
+              )}
+            </div>
+            <p style={{ color: "#666", margin: "3px 0", fontSize: 14 }}>
+              @{userData.autor}
+            </p>
+          </div>
+        </div>
+
+        {/* 📊 Estatísticas */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 25,
             marginBottom: 20,
           }}
         >
-          <div>
-            <strong>{userData.postnumber}</strong>
-            <p style={{ margin: 0 }}>Postagens</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>📸</span>
+            <strong>{userData.postnumber || 0}</strong>
+            <span style={{ color: "#555" }}>posts</span>
           </div>
-          <div>
-            <strong>{userData.seguidoresnumber}</strong>
-            <p style={{ margin: 0 }}>Seguidores</p>
-          </div>
-          <div>
-            <strong>{userData.seguindonumber}</strong>
-            <p style={{ margin: 0 }}>Seguindo</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>👥</span>
+            <strong>{userData.seguidoresnumber || 0}</strong>
+            <span style={{ color: "#555" }}>seguidores</span>
           </div>
         </div>
+
+        {/* 📝 Biografia */}
+        {userData.biografia && (
+          <p
+            style={{
+              color: "#222",
+              lineHeight: 1.5,
+              fontSize: 15,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {userData.biografia}
+          </p>
+        )}
       </div>
 
+      {/* ⚙️ Rodapé fixo */}
       <div
         style={{
           position: "fixed",
@@ -150,7 +176,7 @@ export default function Usuario({ userData }) {
   );
 }
 
-// 🔵 SSR — busca dados direto no servidor (necessário para preview funcionar)
+// 🔵 SSR — Busca os dados direto do servidor
 export async function getServerSideProps(context) {
   const { uid } = context.query;
 
@@ -180,7 +206,6 @@ function Header() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 10,
         padding: "0 15px",
         position: "fixed",
         top: 0,
@@ -196,4 +221,4 @@ function Header() {
       />
     </div>
   );
-}
+              }
