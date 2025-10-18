@@ -2,7 +2,7 @@ import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Configuração do Firebase (mantive suas credenciais)
+// 🔧 Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -13,6 +13,7 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
+// Evita inicialização duplicada
 if (!getApps().length) {
   initializeApp(firebaseConfig);
 }
@@ -30,7 +31,6 @@ export default function Usuario({ userData }) {
 
   return (
     <>
-      {/* Meta tags para pré-visualização */}
       <Head>
         <title>{userData.nome} (@{userData.autor}) — Mention</title>
         <meta property="og:title" content={`${userData.nome} (@${userData.autor})`} />
@@ -45,140 +45,112 @@ export default function Usuario({ userData }) {
 
       <Header />
 
-      <main
+      <div
         style={{
-          fontFamily: "Arial, sans-serif",
-          maxWidth: 600,
-          margin: "80px auto 120px auto",
-          padding: "0 20px",
+          fontFamily: "Arial",
+          maxWidth: 400,
+          margin: "80px auto 100px auto",
+          textAlign: "center",
+          padding: "0 10px",
         }}
       >
-        {/* Linha superior: foto à esquerda + nome/verify/usuario à direita */}
-        <div style={{ display: "flex", gap: 16, alignItems: "flex-start", marginBottom: 8 }}>
-          <img
-            src={userData.foto}
-            alt="Foto do perfil"
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "2px solid #0070f3",
-              flexShrink: 0,
-            }}
-          />
+        <img
+          src={userData.foto}
+          alt="Foto do perfil"
+          style={{
+            width: 120,
+            height: 120,
+            borderRadius: "50%",
+            objectFit: "cover",
+            marginBottom: 10,
+            border: "3px solid #0070f3",
+          }}
+        />
 
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <h2 style={{ margin: 0, fontSize: 22, lineHeight: 1 }}>{userData.nome}</h2>
-              {userData.verify === "SIM" && (
-                <img
-                  src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
-                  alt="Verificado"
-                  style={{ width: 22, height: 22 }}
-                />
-              )}
-            </div>
+        <h2 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+          {userData.nome}
+          {userData.verify === "SIM" && (
+            <img
+              src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
+              alt="Verificado"
+              style={{ width: 20, height: 20 }}
+            />
+          )}
+        </h2>
 
-            <p style={{ margin: "6px 0 8px 0", color: "#444", fontSize: 13 }}>@{userData.autor}</p>
+        <h3 style={{ margin: "5px 0", color: "#444", fontSize: 14 }}>@{userData.autor}</h3>
 
-            {/* Estatísticas abaixo do usuário (posts / seguidores / seguindo) */}
-            <div style={{ display: "flex", gap: 20, alignItems: "center", marginTop: 6 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>📸</span>
-                <div>
-                  <strong style={{ display: "block" }}>{userData.postnumber || 0}</strong>
-                  <small style={{ color: "#555" }}>posts</small>
-                </div>
-              </div>
+        {userData.biografia && (
+          <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
+        )}
 
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>👥</span>
-                <div>
-                  <strong style={{ display: "block" }}>{userData.seguidoresnumber || 0}</strong>
-                  <small style={{ color: "#555" }}>seguidores</small>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>➡️</span>
-                <div>
-                  <strong style={{ display: "block" }}>{userData.seguindonumber || 0}</strong>
-                  <small style={{ color: "#555" }}>seguindo</small>
-                </div>
-              </div>
-            </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            background: "#f3f3f3",
+            padding: 10,
+            borderRadius: 10,
+            marginBottom: 20,
+          }}
+        >
+          <div>
+            <strong>{userData.postnumber}</strong>
+            <p style={{ margin: 0 }}>Postagens</p>
+          </div>
+          <div>
+            <strong>{userData.seguidoresnumber}</strong>
+            <p style={{ margin: 0 }}>Seguidores</p>
+          </div>
+          <div>
+            <strong>{userData.seguindonumber}</strong>
+            <p style={{ margin: 0 }}>Seguindo</p>
           </div>
         </div>
+      </div>
 
-        {/* Biografia, ocupa toda largura abaixo */}
-        {userData.biografia && (
-          <p
-            style={{
-              color: "#222",
-              fontSize: 15,
-              lineHeight: 1.6,
-              marginTop: 16,
-              whiteSpace: "pre-line",
-            }}
-          >
-            {userData.biografia}
-          </p>
-        )}
-      </main>
-
-      {/* Botão fixo embaixo (MENOR) + rodapé */}
       <div
         style={{
           position: "fixed",
-          bottom: 10,
+          bottom: 0,
           left: 0,
           width: "100%",
+          background: "#fff",
+          padding: 10,
+          boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
           display: "flex",
-          justifyContent: "center",
-          pointerEvents: "none", // permite clicar apenas no botão que tem pointerEvents auto
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        <div
+        <a
+          href="https://linktr.ee/DarlanDaSilvaOfc"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
-            width: "94%",
-            maxWidth: 420,
-            background: "#fff",
-            padding: "8px 12px",
-            boxShadow: "0 -4px 18px rgba(0,0,0,0.08)",
-            borderRadius: 12,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            pointerEvents: "auto",
+            display: "inline-block",
+            backgroundColor: "#0070f3",
+            color: "#fff",
+            padding: "12px 24px",
+            borderRadius: 8,
+            textDecoration: "none",
+            fontWeight: "bold",
+            width: "90%",
+            textAlign: "center",
           }}
         >
-          <a
-            href="https://linktr.ee/DarlanDaSilvaOfc"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              backgroundColor: "#0070f3",
-              color: "#fff",
-              padding: "8px 14px",
-              borderRadius: 8,
-              textDecoration: "none",
-              fontWeight: "600",
-              fontSize: 14,
-            }}
-          >
-            📱 Baixar Mention
-          </a>
-
-          <span style={{ fontSize: 12, color: "#666" }}>© Mention — Todos os direitos reservados</span>
-        </div>
+          📱 Baixar Mention
+        </a>
+        <span style={{ fontSize: 12, color: "#777" }}>
+          © Mention — Todos os direitos reservados
+        </span>
       </div>
     </>
   );
 }
 
-// 🔵 SSR — busca os dados direto no servidor (para meta tags funcionarem)
+// 🔵 SSR — busca dados direto no servidor (necessário para preview funcionar)
 export async function getServerSideProps(context) {
   const { uid } = context.query;
 
@@ -192,12 +164,12 @@ export async function getServerSideProps(context) {
 
     return { props: { userData: snapshot.val() } };
   } catch (e) {
-    console.error("Erro ao buscar usuário:", e);
+    console.error(e);
     return { props: { userData: null } };
   }
 }
 
-// Cabeçalho simples (logo corrigida menor e alinhada à esquerda)
+// 🔹 Cabeçalho
 function Header() {
   return (
     <div
@@ -207,19 +179,20 @@ function Header() {
         background: "#0070f3",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-start",
-        padding: "0 16px",
+        justifyContent: "center",
+        gap: 10,
+        padding: "0 15px",
         position: "fixed",
         top: 0,
         left: 0,
-        zIndex: 200,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+        zIndex: 100,
+        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
       }}
     >
       <img
         src="https://i.ibb.co/GQK0jNx5/20251017-003813-0000.png"
         alt="Mention Logo"
-        style={{ height: 28, width: "auto" }}
+        style={{ height: 34 }}
       />
     </div>
   );
