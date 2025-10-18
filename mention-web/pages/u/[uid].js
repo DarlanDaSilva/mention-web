@@ -84,6 +84,7 @@ export default function Usuario({ userData }) {
           <p style={{ color: "#555", margin: "10px 0 20px" }}>{userData.biografia}</p>
         )}
 
+        {/* 🔹 Estatísticas agora abaixo da bio */}
         <div
           style={{
             display: "flex",
@@ -91,24 +92,26 @@ export default function Usuario({ userData }) {
             background: "#f3f3f3",
             padding: 10,
             borderRadius: 10,
-            marginBottom: 20,
+            marginTop: 20,
+            marginBottom: 30,
           }}
         >
           <div>
             <strong>{userData.postnumber}</strong>
-            <p style={{ margin: 0 }}>Postagens</p>
+            <p style={{ margin: 0, fontSize: 13 }}>Postagens</p>
           </div>
           <div>
             <strong>{userData.seguidoresnumber}</strong>
-            <p style={{ margin: 0 }}>Seguidores</p>
+            <p style={{ margin: 0, fontSize: 13 }}>Seguidores</p>
           </div>
           <div>
             <strong>{userData.seguindonumber}</strong>
-            <p style={{ margin: 0 }}>Seguindo</p>
+            <p style={{ margin: 0, fontSize: 13 }}>Seguindo</p>
           </div>
         </div>
       </div>
 
+      {/* 🔹 Rodapé com botão menor */}
       <div
         style={{
           position: "fixed",
@@ -121,7 +124,7 @@ export default function Usuario({ userData }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 8,
+          gap: 6,
         }}
       >
         <a
@@ -132,17 +135,18 @@ export default function Usuario({ userData }) {
             display: "inline-block",
             backgroundColor: "#0070f3",
             color: "#fff",
-            padding: "12px 24px",
-            borderRadius: 8,
+            padding: "8px 18px",
+            borderRadius: 6,
             textDecoration: "none",
             fontWeight: "bold",
-            width: "90%",
+            fontSize: 14,
+            width: "70%",
             textAlign: "center",
           }}
         >
           📱 Baixar Mention
         </a>
-        <span style={{ fontSize: 12, color: "#777" }}>
+        <span style={{ fontSize: 11, color: "#777" }}>
           © Mention — Todos os direitos reservados
         </span>
       </div>
@@ -169,7 +173,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-// 🔹 Cabeçalho
+// 🔹 Cabeçalho atualizado
 function Header() {
   return (
     <div
@@ -179,9 +183,9 @@ function Header() {
         background: "#0070f3",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         gap: 10,
-        padding: "0 15px",
+        padding: "0 20px",
         position: "fixed",
         top: 0,
         left: 0,
@@ -190,10 +194,11 @@ function Header() {
       }}
     >
       <img
-        src="https://i.ibb.co/GQK0jNx5/20251017-003813-0000.png"
+        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
         alt="Mention Logo"
         style={{ height: 34 }}
       />
+      <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Mention</span>
     </div>
   );
-}
+        }
