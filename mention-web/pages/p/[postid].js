@@ -179,7 +179,7 @@ export default function Postagem() {
               }}
             >
               <img
-                src="https://img.icons8.com/ios/50/FFFFFF/chat-message--v1.png"
+                src="https://img.icons8.com/color/48/speech-bubble-with-dots.png"
                 alt="Comentários"
                 style={{ width: 20, height: 20, filter: "invert(36%) sepia(85%) saturate(2479%) hue-rotate(201deg) brightness(93%) contrast(90%)" }}
               />
