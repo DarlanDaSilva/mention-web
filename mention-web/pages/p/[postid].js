@@ -2,7 +2,7 @@ import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Configuração Firebase
+// 🔧 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -13,39 +13,33 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
-// Evita inicialização duplicada
 if (!getApps().length) {
   initializeApp(firebaseConfig);
 }
 
-// 🔹 Função para formatar timestamp
+// 🔹 Formatar data
 function formatarData(timestamp) {
   if (!timestamp) return "";
   const data = new Date(timestamp);
-  const hoje = new Date();
+  const agora = new Date();
   const ontem = new Date();
-  ontem.setDate(hoje.getDate() - 1);
+  ontem.setDate(agora.getDate() - 1);
 
-  const ehHoje =
-    data.getDate() === hoje.getDate() &&
-    data.getMonth() === hoje.getMonth() &&
-    data.getFullYear() === hoje.getFullYear();
+  const hora = data.getHours().toString().padStart(2, "0");
+  const min = data.getMinutes().toString().padStart(2, "0");
 
-  const ehOntem =
-    data.getDate() === ontem.getDate() &&
-    data.getMonth() === ontem.getMonth() &&
-    data.getFullYear() === ontem.getFullYear();
+  const mesmaData = (a, b) =>
+    a.getDate() === b.getDate() &&
+    a.getMonth() === b.getMonth() &&
+    a.getFullYear() === b.getFullYear();
 
-  const horas = data.getHours().toString().padStart(2, "0");
-  const minutos = data.getMinutes().toString().padStart(2, "0");
-
-  if (ehHoje) return `hoje às ${horas}:${minutos}`;
-  if (ehOntem) return `ontem às ${horas}:${minutos}`;
+  if (mesmaData(data, agora)) return `Hoje às ${hora}:${min}`;
+  if (mesmaData(data, ontem)) return `Ontem às ${hora}:${min}`;
   return `${data.getDate().toString().padStart(2, "0")}/${(
     data.getMonth() + 1
   )
     .toString()
-    .padStart(2, "0")}/${data.getFullYear()} às ${horas}:${minutos}`;
+    .padStart(2, "0")}/${data.getFullYear()} às ${hora}:${min}`;
 }
 
 export default function Post({ post, autor }) {
@@ -58,16 +52,15 @@ export default function Post({ post, autor }) {
   }
 
   const dataFormatada = formatarData(post.timestamp);
-  const description = post.mensagem || "Veja esta publicação no Mention.";
 
   return (
     <>
       <Head>
         <title>
-          {autor?.nome ? `${autor.nome} no Mention` : "Publicação — Mention"}
+          {autor?.nome ? `${autor.nome} — Mention` : "Publicação — Mention"}
         </title>
         <meta property="og:title" content={`${autor?.nome || "Mention"}`} />
-        <meta property="og:description" content={description} />
+        <meta property="og:description" content={post.mensagem || ""} />
         <meta property="og:image" content={post.foto} />
         <meta property="og:type" content="article" />
       </Head>
@@ -78,44 +71,59 @@ export default function Post({ post, autor }) {
         style={{
           fontFamily: "Arial",
           maxWidth: 500,
-          margin: "80px auto 100px",
+          margin: "80px auto 120px",
+          backgroundColor: "#fff",
           padding: "0 15px",
         }}
       >
-        {/* 🔹 Autor */}
-        {autor && (
-          <div style={{ display: "flex", alignItems: "center", marginBottom: 15 }}>
-            <img
-              src={autor.foto}
-              alt="Foto do autor"
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginRight: 10,
-                border: "2px solid #0070f3",
-              }}
-            />
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <strong>{autor.nome}</strong>
-                {autor.verify === "SIM" && (
-                  <img
-                    src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
-                    alt="Verificado"
-                    style={{ width: 18, height: 18 }}
-                  />
-                )}
-              </div>
-              <span style={{ color: "#555", fontSize: 13 }}>@{autor.autor}</span>
+        {/* 🔹 Cabeçalho da postagem */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: 10,
+            marginTop: 10,
+          }}
+        >
+          <img
+            src={autor?.foto}
+            alt="Foto do autor"
+            style={{
+              width: 45,
+              height: 45,
+              borderRadius: "50%",
+              objectFit: "cover",
+              marginRight: 10,
+              border: "2px solid #0070f3",
+            }}
+          />
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <strong style={{ fontSize: 15 }}>{autor?.nome}</strong>
+              {autor?.verify === "SIM" && (
+                <img
+                  src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
+                  alt="Verificado"
+                  style={{ width: 16, height: 16 }}
+                />
+              )}
             </div>
+            <span style={{ color: "#555", fontSize: 13 }}>{dataFormatada}</span>
           </div>
-        )}
+        </div>
 
         {/* 🔹 Mensagem */}
         {post.mensagem && (
-          <p style={{ color: "#333", marginBottom: 15 }}>{post.mensagem}</p>
+          <p
+            style={{
+              color: "#333",
+              fontSize: 15,
+              marginBottom: 10,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {post.mensagem}
+          </p>
         )}
 
         {/* 🔹 Imagem */}
@@ -132,10 +140,29 @@ export default function Post({ post, autor }) {
           />
         )}
 
-        <p style={{ fontSize: 13, color: "#666" }}>{dataFormatada}</p>
+        {/* 🔹 Botão de comentários */}
+        <div
+          style={{
+            borderTop: "1px solid #ddd",
+            paddingTop: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            cursor: "pointer",
+            color: "#0070f3",
+            fontWeight: "bold",
+          }}
+        >
+          <img
+            src="https://i.ibb.co/8dDyb4V/icons8-comments-48.png"
+            alt="Comentários"
+            style={{ width: 20, height: 20 }}
+          />
+          Ver comentários
+        </div>
       </div>
 
-      {/* 🔹 Rodapé */}
+      {/* 🔹 Rodapé fixo */}
       <div
         style={{
           position: "fixed",
@@ -178,9 +205,10 @@ export default function Post({ post, autor }) {
   );
 }
 
-// 🔹 Busca dados do servidor (SSR)
+// 🔹 Server-side data fetch
 export async function getServerSideProps(context) {
   const { postid } = context.query;
+
   try {
     const db = getDatabase();
     const postSnap = await get(ref(db, "publicacoes/" + postid));
@@ -188,9 +216,8 @@ export async function getServerSideProps(context) {
     if (!postSnap.exists()) return { props: { post: null } };
 
     const post = postSnap.val();
-
-    // Buscar dados do autor
     let autorData = null;
+
     if (post.autor) {
       const autorSnap = await get(ref(db, "usuarios/" + post.autor));
       if (autorSnap.exists()) autorData = autorSnap.val();
@@ -203,7 +230,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-// 🔹 Cabeçalho (igual ao de usuários)
+// 🔹 Cabeçalho igual ao de usuários
 function Header() {
   return (
     <div
@@ -233,4 +260,4 @@ function Header() {
       </span>
     </div>
   );
-          }
+}
