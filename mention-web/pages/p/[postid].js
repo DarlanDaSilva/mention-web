@@ -98,7 +98,14 @@ export default function Post({ post, autor }) {
             }}
           />
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                flexWrap: "wrap",
+              }}
+            >
               <strong style={{ fontSize: 15 }}>{autor?.nome}</strong>
               {autor?.verify === "SIM" && (
                 <img
@@ -107,8 +114,10 @@ export default function Post({ post, autor }) {
                   style={{ width: 16, height: 16 }}
                 />
               )}
+              <span style={{ color: "#555", fontSize: 13 }}>
+                • {dataFormatada}
+              </span>
             </div>
-            <span style={{ color: "#555", fontSize: 13 }}>{dataFormatada}</span>
           </div>
         </div>
 
@@ -162,7 +171,7 @@ export default function Post({ post, autor }) {
         </div>
       </div>
 
-      {/* 🔹 Rodapé fixo */}
+      {/* 🔹 Rodapé simples */}
       <div
         style={{
           position: "fixed",
@@ -173,30 +182,9 @@ export default function Post({ post, autor }) {
           padding: 10,
           boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 6,
+          justifyContent: "center",
         }}
       >
-        <a
-          href="https://linktr.ee/DarlanDaSilvaOfc"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#0070f3",
-            color: "#fff",
-            padding: "8px 18px",
-            borderRadius: 6,
-            textDecoration: "none",
-            fontWeight: "bold",
-            fontSize: 14,
-            width: "70%",
-            textAlign: "center",
-          }}
-        >
-          📱 Baixar Mention
-        </a>
         <span style={{ fontSize: 11, color: "#777" }}>
           © Mention — Todos os direitos reservados
         </span>
@@ -230,7 +218,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-// 🔹 Cabeçalho igual ao de usuários
+// 🔹 Cabeçalho com logo + botão de download
 function Header() {
   return (
     <div
@@ -240,8 +228,7 @@ function Header() {
         background: "#0070f3",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-start",
-        gap: 10,
+        justifyContent: "space-between",
         padding: "0 20px",
         position: "fixed",
         top: 0,
@@ -250,14 +237,30 @@ function Header() {
         boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
       }}
     >
-      <img
-        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
-        alt="Mention Logo"
-        style={{ height: 34 }}
-      />
-      <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
-        Mention
-      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <img
+          src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
+          alt="Mention Logo"
+          style={{ height: 34 }}
+        />
+        <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
+          Mention
+        </span>
+      </div>
+
+      {/* 📱 Botão de download */}
+      <a
+        href="https://linktr.ee/DarlanDaSilvaOfc"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontSize: 22,
+          color: "#fff",
+          textDecoration: "none",
+        }}
+      >
+        ⬇️
+      </a>
     </div>
   );
-}
+                     }
