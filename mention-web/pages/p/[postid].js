@@ -1,266 +1,200 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Firebase Config
+// 🔧 Configuração Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
-  authDomain: "mention-zstore.firebaseapp.com",
-  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com/",
-  projectId: "mention-zstore",
-  storageBucket: "mention-zstore.firebasestorage.app",
-  messagingSenderId: "602263910318",
-  appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_AUTH_DOMAIN",
+  databaseURL: "SUA_DATABASE_URL",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID",
 };
 
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-// 🔹 Formatar data
-function formatarData(timestamp) {
-  if (!timestamp) return "";
-  const data = new Date(timestamp);
-  const agora = new Date();
-  const ontem = new Date();
-  ontem.setDate(agora.getDate() - 1);
+export default function Postagem() {
+  const router = useRouter();
+  const { postid } = router.query;
+  const [post, setPost] = useState(null);
+  const [autor, setAutor] = useState(null);
 
-  const hora = data.getHours().toString().padStart(2, "0");
-  const min = data.getMinutes().toString().padStart(2, "0");
+  useEffect(() => {
+    if (!postid) return;
 
-  const mesmaData = (a, b) =>
-    a.getDate() === b.getDate() &&
-    a.getMonth() === b.getMonth() &&
-    a.getFullYear() === b.getFullYear();
+    const fetchData = async () => {
+      const postRef = ref(db, `publicacoes/${postid}`);
+      const snapshot = await get(postRef);
+      if (snapshot.exists()) {
+        const postData = snapshot.val();
+        setPost(postData);
 
-  if (mesmaData(data, agora)) return `Hoje às ${hora}:${min}`;
-  if (mesmaData(data, ontem)) return `Ontem às ${hora}:${min}`;
-  return `${data.getDate().toString().padStart(2, "0")}/${(
-    data.getMonth() + 1
-  )
-    .toString()
-    .padStart(2, "0")}/${data.getFullYear()} às ${hora}:${min}`;
-}
+        if (postData.autor) {
+          const autorRef = ref(db, `usuarios/${postData.autor}`);
+          const autorSnap = await get(autorRef);
+          if (autorSnap.exists()) {
+            setAutor(autorSnap.val());
+          }
+        }
+      }
+    };
 
-export default function Post({ post, autor }) {
-  if (!post) {
-    return (
-      <p style={{ textAlign: "center", marginTop: "60px" }}>
-        Publicação não encontrada 😢
-      </p>
-    );
+    fetchData();
+  }, [postid]);
+
+  function formatarData(timestamp) {
+    const data = new Date(timestamp);
+    const agora = new Date();
+
+    const diff = agora - data;
+    const umDia = 24 * 60 * 60 * 1000;
+
+    if (diff < umDia && data.getDate() === agora.getDate())
+      return `Hoje às ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+    if (diff < 2 * umDia && data.getDate() === agora.getDate() - 1)
+      return `Ontem às ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+
+    return `${data.toLocaleDateString("pt-BR")} às ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
   }
-
-  const dataFormatada = formatarData(post.timestamp);
 
   return (
     <>
       <Head>
-        <title>
-          {autor?.nome ? `${autor.nome} — Mention` : "Publicação — Mention"}
-        </title>
-        <meta property="og:title" content={`${autor?.nome || "Mention"}`} />
-        <meta property="og:description" content={post.mensagem || ""} />
-        <meta property="og:image" content={post.foto} />
+        <title>{autor ? `${autor.nome} no Mention` : "Publicação | Mention"}</title>
+        <meta name="description" content={post?.mensagem || "Veja esta publicação no Mention"} />
+        <meta property="og:title" content={autor ? `${autor.nome} no Mention` : "Publicação no Mention"} />
+        <meta property="og:description" content={post?.mensagem || ""} />
+        <meta property="og:image" content={post?.foto || "https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"} />
+        <meta property="og:url" content={`https://mention-web.vercel.app/p/${postid}`} />
         <meta property="og:type" content="article" />
       </Head>
 
-      <Header />
-
-      <div
+      {/* 🔷 Header */}
+      <header
         style={{
-          fontFamily: "Arial",
-          maxWidth: 500,
-          margin: "80px auto 120px",
-          backgroundColor: "#fff",
-          padding: "0 15px",
+          background: "#007bff",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 16px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         }}
       >
-        {/* 🔹 Cabeçalho da postagem */}
-        <div
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <img
+            src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
+            alt="Mention Logo"
+            style={{ width: 28, height: 28 }}
+          />
+          <h1 style={{ fontSize: 18, margin: 0, fontWeight: "bold" }}>Mention</h1>
+        </div>
+
+        {/* 🔽 Botão Download */}
+        <a
+          href="https://mention-web.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             display: "flex",
             alignItems: "center",
-            marginBottom: 10,
-            marginTop: 10,
+            justifyContent: "center",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: "2px solid rgba(255,255,255,0.6)",
+            transition: "all 0.2s ease",
           }}
         >
           <img
-            src={autor?.foto}
-            alt="Foto do autor"
-            style={{
-              width: 45,
-              height: 45,
-              borderRadius: "50%",
-              objectFit: "cover",
-              marginRight: 10,
-              border: "2px solid #0070f3",
-            }}
+            src="https://img.icons8.com/pulsar-line/48/FFFFFF/download.png"
+            alt="Download"
+            style={{ width: 22, height: 22 }}
           />
-          <div>
-            <div
+        </a>
+      </header>
+
+      {/* 📸 Conteúdo */}
+      <main style={{ padding: 20, textAlign: "center" }}>
+        {post ? (
+          <div style={{ maxWidth: 600, margin: "0 auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.1)" }}>
+            {/* Autor */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px" }}>
+              <img
+                src={autor?.foto || "https://i.ibb.co/3c1vKJk/default-avatar.png"}
+                alt={autor?.nome}
+                style={{ width: 45, height: 45, borderRadius: "50%", objectFit: "cover" }}
+              />
+              <div style={{ textAlign: "left" }}>
+                <strong style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  {autor?.nome || "Usuário"}
+                  {autor?.verify && (
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg"
+                      alt="Verificado"
+                      style={{ width: 16, height: 16 }}
+                    />
+                  )}
+                </strong>
+                <span style={{ fontSize: 13, color: "#555" }}>@{post.autor}</span>
+              </div>
+            </div>
+
+            {/* Foto da Publicação */}
+            {post.foto && (
+              <img
+                src={post.foto}
+                alt="Publicação"
+                style={{ width: "100%", maxHeight: 400, objectFit: "cover" }}
+              />
+            )}
+
+            {/* Texto */}
+            <p style={{ padding: "10px 16px", textAlign: "left", fontSize: 15 }}>{post.mensagem}</p>
+
+            {/* Data */}
+            <div style={{ padding: "0 16px 10px", textAlign: "left", fontSize: 13, color: "#888" }}>
+              {formatarData(post.timestamp)}
+            </div>
+
+            {/* 💬 Comentários */}
+            <a
+              href="https://mention-web.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 5,
-                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 6,
+                padding: "10px 0",
+                borderTop: "1px solid #eee",
+                textDecoration: "none",
+                color: "#007bff",
               }}
             >
-              <strong style={{ fontSize: 15 }}>{autor?.nome}</strong>
-              {autor?.verify === "SIM" && (
-                <img
-                  src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
-                  alt="Verificado"
-                  style={{ width: 16, height: 16 }}
-                />
-              )}
-              <span style={{ color: "#555", fontSize: 13 }}>
-                • {dataFormatada}
-              </span>
-            </div>
+              <img
+                src="https://img.icons8.com/ios/50/FFFFFF/chat-message--v1.png"
+                alt="Comentários"
+                style={{ width: 20, height: 20, filter: "invert(36%) sepia(85%) saturate(2479%) hue-rotate(201deg) brightness(93%) contrast(90%)" }}
+              />
+              <span style={{ fontSize: 15, fontWeight: 500 }}>Ver comentários</span>
+            </a>
           </div>
-        </div>
-
-        {/* 🔹 Mensagem */}
-        {post.mensagem && (
-          <p
-            style={{
-              color: "#333",
-              fontSize: 15,
-              marginBottom: 10,
-              whiteSpace: "pre-line",
-            }}
-          >
-            {post.mensagem}
-          </p>
+        ) : (
+          <p>Carregando publicação...</p>
         )}
+      </main>
 
-        {/* 🔹 Imagem */}
-        {post.foto && (
-          <img
-            src={post.foto}
-            alt="Publicação"
-            style={{
-              width: "100%",
-              borderRadius: 12,
-              objectFit: "cover",
-              marginBottom: 10,
-            }}
-          />
-        )}
-
-        {/* 🔹 Botão de comentários */}
-        <div
-          style={{
-            borderTop: "1px solid #ddd",
-            paddingTop: 10,
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            cursor: "pointer",
-            color: "#0070f3",
-            fontWeight: "bold",
-          }}
-        >
-          <img
-            src="https://i.ibb.co/8dDyb4V/icons8-comments-48.png"
-            alt="Comentários"
-            style={{ width: 20, height: 20 }}
-          />
-          Ver comentários
-        </div>
-      </div>
-
-      {/* 🔹 Rodapé simples */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          background: "#fff",
-          padding: 10,
-          boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <span style={{ fontSize: 11, color: "#777" }}>
-          © Mention — Todos os direitos reservados
-        </span>
-      </div>
+      {/* ⚪ Rodapé */}
+      <footer style={{ textAlign: "center", padding: "16px 0", color: "#888", fontSize: 14 }}>
+        © Mention
+      </footer>
     </>
   );
 }
-
-// 🔹 Server-side data fetch
-export async function getServerSideProps(context) {
-  const { postid } = context.query;
-
-  try {
-    const db = getDatabase();
-    const postSnap = await get(ref(db, "publicacoes/" + postid));
-
-    if (!postSnap.exists()) return { props: { post: null } };
-
-    const post = postSnap.val();
-    let autorData = null;
-
-    if (post.autor) {
-      const autorSnap = await get(ref(db, "usuarios/" + post.autor));
-      if (autorSnap.exists()) autorData = autorSnap.val();
-    }
-
-    return { props: { post, autor: autorData } };
-  } catch (e) {
-    console.error(e);
-    return { props: { post: null } };
-  }
-}
-
-// 🔹 Cabeçalho com logo + botão de download
-function Header() {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: 60,
-        background: "#0070f3",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 20px",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <img
-          src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
-          alt="Mention Logo"
-          style={{ height: 34 }}
-        />
-        <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
-          Mention
-        </span>
-      </div>
-
-      {/* 📱 Botão de download */}
-      <a
-        href="https://linktr.ee/DarlanDaSilvaOfc"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          fontSize: 22,
-          color: "#fff",
-          textDecoration: "none",
-        }}
-      >
-        ⬇️
-      </a>
-    </div>
-  );
-                     }
