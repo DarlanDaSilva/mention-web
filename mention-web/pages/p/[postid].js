@@ -6,13 +6,13 @@ import { getDatabase, ref, get } from "firebase/database";
 
 // 🔧 Configuração Firebase
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  databaseURL: "SUA_DATABASE_URL",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_BUCKET",
-  messagingSenderId: "SEU_SENDER_ID",
-  appId: "SEU_APP_ID",
+  apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
+  authDomain: "mention-zstore.firebaseapp.com",
+  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com",
+  projectId: "mention-zstore",
+  storageBucket: "mention-zstore.appspot.com",
+  messagingSenderId: "602263910318",
+  appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
 const app = initializeApp(firebaseConfig);
