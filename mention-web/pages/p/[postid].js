@@ -8,9 +8,9 @@ import { getDatabase, ref, get } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
-  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com",
+  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com", // ✅ sem barra no final
   projectId: "mention-zstore",
-  storageBucket: "mention-zstore.appspot.com",
+  storageBucket: "mention-zstore.firebasestorage.app",
   messagingSenderId: "602263910318",
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
