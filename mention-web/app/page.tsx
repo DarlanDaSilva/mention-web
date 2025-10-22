@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import { initializeApp } from "firebase/app";
@@ -93,6 +95,7 @@ export default function Feed() {
           alignItems: "center",
           padding: "10px 16px",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          justifyContent: "space-between",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -103,6 +106,23 @@ export default function Feed() {
           />
           <h1 style={{ fontSize: 18, margin: 0, fontWeight: "bold" }}>Mention</h1>
         </div>
+
+        <a
+          href="https://mention-web.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <img
+            src="https://img.icons8.com/pulsar-line/48/FFFFFF/download.png"
+            alt="Download"
+            style={{ width: 28, height: 28 }}
+          />
+        </a>
       </header>
 
       {/* 📰 Lista de Postagens */}
