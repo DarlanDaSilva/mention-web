@@ -47,7 +47,7 @@ export default function Postagem() {
     fetchData();
   }, [postid]);
 
-  function formatarData(timestamp) {
+  function formatarData(timestamp: number | string) {
     const data = new Date(timestamp);
     const agora = new Date();
     const diff = agora - data;
