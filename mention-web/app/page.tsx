@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // 🕒 Função para formatar tempo
-function formatarTempo(timestamp) {
+function formatarTempo(timestamp: number | string) {
   if (!timestamp) return "";
   const agora = new Date();
   const data = new Date(timestamp);
