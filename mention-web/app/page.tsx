@@ -24,7 +24,7 @@ function formatarTempo(timestamp: number | string) {
   if (!timestamp) return "";
   const agora = new Date();
   const data = new Date(timestamp);
-  const diff = agora - data;
+  const diff = agora.getTime() - data.getTime();
 
   const segundos = Math.floor(diff / 1000);
   const minutos = Math.floor(segundos / 60);
