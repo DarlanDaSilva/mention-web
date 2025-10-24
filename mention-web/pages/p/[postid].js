@@ -8,7 +8,7 @@ import { getDatabase, ref, get } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
-  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com", // ✅ sem barra no final
+  databaseURL: "https://mention-zstore-default-rtdb.firebaseio.com",
   projectId: "mention-zstore",
   storageBucket: "mention-zstore.firebasestorage.app",
   messagingSenderId: "602263910318",
@@ -50,7 +50,6 @@ export default function Postagem() {
   function formatarData(timestamp) {
     const data = new Date(timestamp);
     const agora = new Date();
-
     const diff = agora - data;
     const umDia = 24 * 60 * 60 * 1000;
 
@@ -59,7 +58,10 @@ export default function Postagem() {
     if (diff < 2 * umDia && data.getDate() === agora.getDate() - 1)
       return `Ontem às ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
 
-    return `${data.toLocaleDateString("pt-BR")} às ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+    return `${data.toLocaleDateString("pt-BR")} às ${data.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   }
 
   return (
@@ -67,9 +69,15 @@ export default function Postagem() {
       <Head>
         <title>{autor ? `${autor.nome} no Mention` : "Publicação | Mention"}</title>
         <meta name="description" content={post?.mensagem || "Veja esta publicação no Mention"} />
-        <meta property="og:title" content={autor ? `${autor.nome} no Mention` : "Publicação no Mention"} />
+        <meta
+          property="og:title"
+          content={autor ? `${autor.nome} no Mention` : "Publicação no Mention"}
+        />
         <meta property="og:description" content={post?.mensagem || ""} />
-        <meta property="og:image" content={post?.foto || "https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"} />
+        <meta
+          property="og:image"
+          content={post?.foto || "https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"}
+        />
         <meta property="og:url" content={`https://mention-web.vercel.app/p/${postid}`} />
         <meta property="og:type" content="article" />
       </Head>
@@ -122,13 +130,33 @@ export default function Postagem() {
       {/* 📸 Conteúdo */}
       <main style={{ padding: 20, textAlign: "center" }}>
         {post ? (
-          <div style={{ maxWidth: 600, margin: "0 auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.1)" }}>
+          <div
+            style={{
+              maxWidth: 600,
+              margin: "0 auto",
+              background: "#fff",
+              borderRadius: 12,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            }}
+          >
             {/* Autor */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px 16px",
+              }}
+            >
               <img
                 src={autor?.foto || "https://i.ibb.co/3c1vKJk/default-avatar.png"}
                 alt={autor?.nome}
-                style={{ width: 45, height: 45, borderRadius: "50%", objectFit: "cover" }}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
               />
               <div style={{ textAlign: "left" }}>
                 <strong style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -145,20 +173,64 @@ export default function Postagem() {
               </div>
             </div>
 
-            {/* Foto da Publicação */}
-            {post.foto && (
-              <img
-                src={post.foto}
-                alt="Publicação"
-                style={{ width: "100%", maxHeight: 400, objectFit: "cover" }}
-              />
-            )}
+            {/* 📷 Carrossel de fotos */}
+            {(() => {
+              const fotosValidas = [];
+              if (post.foto && post.foto.trim() !== "") fotosValidas.push(post.foto);
+              if (post.foto2 && post.foto2.trim() !== "") fotosValidas.push(post.foto2);
+              if (post.foto3 && post.foto3.trim() !== "") fotosValidas.push(post.foto3);
+
+              if (fotosValidas.length === 0) return null;
+
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    overflowX: fotosValidas.length > 1 ? "auto" : "hidden",
+                    scrollSnapType: fotosValidas.length > 1 ? "x mandatory" : "none",
+                    gap: 4,
+                    borderRadius: 12,
+                  }}
+                >
+                  {fotosValidas.map((fotoUrl, i) => (
+                    <img
+                      key={i}
+                      src={fotoUrl}
+                      alt={`Foto ${i + 1}`}
+                      style={{
+                        width: "100%",
+                        maxWidth: "100%",
+                        flexShrink: 0,
+                        objectFit: "cover",
+                        borderRadius: 12,
+                        scrollSnapAlign: "center",
+                      }}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Texto */}
-            <p style={{ padding: "10px 16px", textAlign: "left", fontSize: 15 }}>{post.mensagem}</p>
+            <p
+              style={{
+                padding: "10px 16px",
+                textAlign: "left",
+                fontSize: 15,
+              }}
+            >
+              {post.mensagem}
+            </p>
 
             {/* Data */}
-            <div style={{ padding: "0 16px 10px", textAlign: "left", fontSize: 13, color: "#888" }}>
+            <div
+              style={{
+                padding: "0 16px 10px",
+                textAlign: "left",
+                fontSize: 13,
+                color: "#888",
+              }}
+            >
               {formatarData(post.timestamp)}
             </div>
 
@@ -181,7 +253,12 @@ export default function Postagem() {
               <img
                 src="https://img.icons8.com/color/48/speech-bubble-with-dots.png"
                 alt="Comentários"
-                style={{ width: 20, height: 20, filter: "invert(36%) sepia(85%) saturate(2479%) hue-rotate(201deg) brightness(93%) contrast(90%)" }}
+                style={{
+                  width: 20,
+                  height: 20,
+                  filter:
+                    "invert(36%) sepia(85%) saturate(2479%) hue-rotate(201deg) brightness(93%) contrast(90%)",
+                }}
               />
               <span style={{ fontSize: 15, fontWeight: 500 }}>Ver comentários</span>
             </a>
@@ -192,9 +269,16 @@ export default function Postagem() {
       </main>
 
       {/* ⚪ Rodapé */}
-      <footer style={{ textAlign: "center", padding: "16px 0", color: "#888", fontSize: 14 }}>
+      <footer
+        style={{
+          textAlign: "center",
+          padding: "16px 0",
+          color: "#888",
+          fontSize: 14,
+        }}
+      >
         © Mention
       </footer>
     </>
   );
-}
+                      }
