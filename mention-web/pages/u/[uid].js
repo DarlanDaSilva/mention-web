@@ -44,8 +44,8 @@ export default function Usuario({ profile }) {
   const bgColor = profile.corFundo || 'bg-gray-900'; 
   
   return (
-    // Adicionei 'pb-[70px]' para garantir que o rodapé fixo não cubra o último conteúdo
-    <div className={`min-h-screen w-full antialiased text-white pb-[70px] ${bgColor}`}> 
+    // CORREÇÃO: Adicionadas as classes m-0 (margin: 0) e p-0 (padding: 0)
+    <div className={`min-h-screen w-full antialiased text-white m-0 p-0 pb-[70px] ${bgColor}`}> 
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={description} />
@@ -64,11 +64,7 @@ export default function Usuario({ profile }) {
           className="relative w-[120px] h-[120px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
         >
           
-          {/* Ajuste da Imagem:
-            - A imagem já estava com "w-full h-full object-cover object-center", 
-              o que garante que ela ocupe 100% da largura e altura do contêiner de 120x120px
-              e mantenha a proporção (cortando as bordas se necessário).
-          */}
+          {/* Imagem */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
@@ -120,10 +116,7 @@ export default function Usuario({ profile }) {
 
       </main>
 
-      {/* --- 3. RODAPÉ FIXO (NOVO CÓDIGO APLICADO) --- 
-        Removi o texto "Vizbio.pro Crie sua página de banners visuais" do corpo
-        da página e o movi para cá.
-      */}
+      {/* --- 3. RODAPÉ FIXO --- */}
       <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-20">
           {/* Linha 1: Vizbio.pro Crie sua página de banners visuais */}
           <a
