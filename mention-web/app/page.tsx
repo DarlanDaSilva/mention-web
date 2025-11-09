@@ -6,19 +6,16 @@
  * bibliotecas como 'lucide-react'.
  */
 
+"use client"; // <-- ESTA É A CORREÇÃO!
+
 import type { Metadata } from 'next';
 
 // Metadados para SEO (Google) e compartilhamento (WhatsApp)
-export const metadata: Metadata = {
-  title: 'Vizbio.pro - Sua Bio, Mais Visual',
-  description: 'Crie um link-na-bio com banners clicáveis em vez de botões. Baixe o app e crie seu perfil visual em minutos.',
-  // Você pode adicionar uma imagem de compartilhamento aqui
-  // openGraph: {
-  //   title: 'Vizbio.pro',
-  //   description: 'Sua bio, mais visual.',
-  //   images: ['/sua-imagem-og.png'], // Coloque esta imagem na pasta /public
-  // },
-};
+// AVISO: "use client" e "export const metadata" não podem ser usados no mesmo arquivo.
+// Vamos mover os Metadados para o layout.tsx se ele existir,
+// ou simplesmente remover por agora para fazer o build funcionar.
+// Para este arquivo, vamos focar em fazer o build passar.
+// A melhor prática é ter o 'metadata' no /app/layout.tsx
 
 // --- Ícones SVG para uso na página ---
 
@@ -155,9 +152,7 @@ export default function Page() {
                 <p className="text-gray-400">
                   Use seu link vizbio.pro no Instagram, TikTok,
                   ou em qualquer lugar.
-                </p>
-                {/* O ERRO ESTAVA AQUI - </pre> FOI REMOVIDO 
-                */}
+                </pre>
               </div>
 
             </div>
