@@ -60,7 +60,7 @@ export default function Usuario({ profile }) {
         
         {/* --- 1. CAPA QUADRADA (250x250px) --- */}
         <header 
-          className="relative w-[250px] h-[250px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
+          className="relative w-[120px] h-[120px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
         >
           
           {/* Imagem do Perfil */}
