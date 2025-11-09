@@ -1,8 +1,12 @@
 import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
-import { getDatabase, ref, get } from "firebase/database";
+import { getDatabase, ref, get, query, orderByChild, equalTo } from "firebase/database";
 
-// 🔧 Configuração Firebase
+// ---------------------------------------------------------------------------
+// 🔧 CONFIGURAÇÃO DO FIREBASE (USE A SUA)
+// ---------------------------------------------------------------------------
+// Estas são as chaves do seu projeto antigo "Mention".
+// Se o VIZBIO estiver em um novo projeto, ATUALIZE-AS.
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -13,223 +17,195 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
-// Evita inicialização duplicada
+// Evita inicialização duplicada em ambiente de desenvolvimento
 if (!getApps().length) {
   initializeApp(firebaseConfig);
 }
 
-export default function Usuario({ userData }) {
-  if (!userData) {
+// ---------------------------------------------------------------------------
+// 🎨 O COMPONENTE DA PÁGINA (DESIGN COM TAILWIND)
+// ---------------------------------------------------------------------------
+export default function Usuario({ profile, banners }) {
+  
+  // 1. Se o usuário não for encontrado
+  if (!profile) {
     return (
-      <p style={{ textAlign: "center", marginTop: "60px" }}>
-        Usuário não encontrado 😢
-      </p>
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <Head>
+          <title>Perfil Não Encontrado</title>
+        </Head>
+        <p className="text-lg opacity-80">😢 Perfil não encontrado.</p>
+      </div>
     );
   }
 
-  const description = userData.biografia || `@${userData.autor}`;
+  // 2. Se o usuário for encontrado, monte a página
+  const pageTitle = `${profile.nome} (@${profile.autor}) | Vizbio`;
+  const description = profile.biografia || `Confira os links de ${profile.nome}`;
 
   return (
-    <>
+    // Fundo gradiente igual ao da Landing Page
+    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-gray-800 text-white antialiased">
       <Head>
-        <title>{userData.nome} (@{userData.autor}) — Mention</title>
-        <meta property="og:title" content={`${userData.nome} (@${userData.autor})`} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={description} />
+        {/* Open Graph Tags (para previews no WhatsApp, etc.) */}
+        <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content={userData.foto} />
+        <meta property="og:image" content={profile.foto} />
         <meta property="og:type" content="profile" />
+        {/* Twitter Tags (para previews no Twitter/X) */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${userData.nome} (@${userData.autor})`} />
+        <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={userData.foto} />
+        <meta name="twitter:image" content={profile.foto} />
       </Head>
 
-      <Header />
-
-      <div
-        style={{
-          fontFamily: "Arial",
-          maxWidth: 420,
-          margin: "80px auto 100px auto",
-          padding: "0 15px",
-        }}
-      >
-        {/* 🔹 Layout: foto + dados lado a lado */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 15,
-            marginBottom: 20,
-          }}
-        >
+      {/* Container Principal */}
+      <main className="max-w-xl mx-auto p-4 pt-12 md:pt-20">
+        
+        {/* --- 1. CABEÇALHO DO PERFIL --- */}
+        <header className="flex flex-col items-center text-center">
           <img
-            src={userData.foto}
+            src={profile.foto}
             alt="Foto do perfil"
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "3px solid #0070f3",
+            className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-gray-700 shadow-lg"
+            // Fallback para uma imagem placeholder se a foto falhar
+            onError={(e) => {
+              e.currentTarget.src = `https://placehold.co/150x150/1F2937/FFFFFF?text=${profile.nome.charAt(0)}`;
+              e.currentTarget.onerror = null; 
             }}
           />
-
-          <div style={{ flex: 1 }}>
-            <h2
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                margin: 0,
-                fontSize: 18,
-              }}
-            >
-              {userData.nome}
-              {userData.verify === "SIM" && (
-                <img
-                  src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
-                  alt="Verificado"
-                  style={{ width: 18, height: 18 }}
-                />
-              )}
-            </h2>
-
-            <p
-              style={{
-                color: "#555",
-                fontSize: 14,
-                margin: "4px 0 10px 0",
-              }}
-            >
-              @{userData.autor}
+          <h1 className="text-2xl md:text-3xl font-bold mt-4 flex items-center gap-2">
+            {profile.nome}
+            {/* Selo de Verificado (Opcional) */}
+            {profile.verify === "SIM" && (
+              <img
+                src="https://i.ibb.co/cSVZ7gVY/icons8-crach-verificado-48.png"
+                alt="Verificado"
+                title="Verificado"
+                className="w-6 h-6"
+              />
+            )}
+          </h1>
+          <p className="text-md text-gray-400 mt-1">@{profile.autor}</p>
+          {profile.biografia && (
+            <p className="text-sm md:text-base text-gray-300 mt-3 max-w-md">
+              {profile.biografia}
             </p>
+          )}
+        </header>
 
-            {/* 🔹 Estatísticas (sem “seguindo”) */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "90%",
-                background: "#f5f5f5",
-                padding: "6px 10px",
-                borderRadius: 8,
-              }}
-            >
-              <div style={{ textAlign: "center", flex: 1 }}>
-                <strong>{userData.postnumber}</strong>
-                <p style={{ margin: 0, fontSize: 12 }}>Postagens</p>
-              </div>
-              <div style={{ textAlign: "center", flex: 1 }}>
-                <strong>{userData.seguidoresnumber}</strong>
-                <p style={{ margin: 0, fontSize: 12 }}>Seguidores</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* --- 2. LISTA DE BANNERS --- */}
+        <section className="mt-10 md:mt-12 space-y-4">
+          {banners.length > 0 ? (
+            banners.map((banner) => (
+              <a
+                key={banner.id}
+                href={banner.linkUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="block w-full rounded-xl overflow-hidden shadow-lg transition-transform duration-300 ease-out hover:scale-[1.03] focus:scale-[1.03] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                <img
+                  src={banner.imageUrl}
+                  alt="Banner"
+                  className="w-full h-auto object-cover"
+                  // Fallback para um banner placeholder
+                  onError={(e) => {
+                    e.currentTarget.src = "https://placehold.co/600x200/374151/FFFFFF?text=Banner+Inv%C3%A1lido";
+                    e.currentTarget.onerror = null;
+                  }}
+                />
+              </a>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">
+              Nenhum banner encontrado.
+            </p>
+          )}
+        </section>
 
-        {/* 🔹 Biografia */}
-        {userData.biografia && (
-          <p
-            style={{
-              color: "#444",
-              fontSize: 14,
-              lineHeight: 1.5,
-              marginTop: 10,
-            }}
+        {/* --- 3. RODAPÉ --- */}
+        <footer className="text-center mt-16 pb-10">
+          <a
+            href="https://vizbio.pro" // Link para sua landing page
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-lg font-bold text-white opacity-90 hover:opacity-100"
           >
-            {userData.biografia}
+            Vizbio.pro
+          </a>
+          <p className="text-sm text-gray-500 mt-1">
+            Crie sua página de banners visuais.
           </p>
-        )}
-      </div>
-
-      {/* 🔹 Rodapé fixo */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          background: "#fff",
-          padding: 10,
-          boxShadow: "0 -2px 6px rgba(0,0,0,0.1)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        <a
-          href="https://linktr.ee/DarlanDaSilvaOfc"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#0070f3",
-            color: "#fff",
-            padding: "8px 18px",
-            borderRadius: 6,
-            textDecoration: "none",
-            fontWeight: "bold",
-            fontSize: 14,
-            width: "70%",
-            textAlign: "center",
-          }}
-        >
-          📱 Baixar Mention
-        </a>
-        <span style={{ fontSize: 11, color: "#777" }}>
-          © Mention — Todos os direitos reservados
-        </span>
-      </div>
-    </>
-  );
-}
-
-// 🔵 SSR — busca dados direto do servidor (para preview em redes sociais)
-export async function getServerSideProps(context) {
-  const { uid } = context.query;
-
-  try {
-    const db = getDatabase();
-    const snapshot = await get(ref(db, "usuarios/" + uid));
-
-    if (!snapshot.exists()) {
-      return { props: { userData: null } };
-    }
-
-    return { props: { userData: snapshot.val() } };
-  } catch (e) {
-    console.error(e);
-    return { props: { userData: null } };
-  }
-}
-
-// 🔹 Cabeçalho (logo + texto Mention)
-function Header() {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: 60,
-        background: "#0070f3",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        gap: 10,
-        padding: "0 20px",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-      }}
-    >
-      <img
-        src="https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"
-        alt="Mention Logo"
-        style={{ height: 34 }}
-      />
-      <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>Mention</span>
+        </footer>
+      </main>
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// 🚀 SERVER-SIDE RENDERING (SSR)
+// ---------------------------------------------------------------------------
+// Isto roda no servidor (na Vercel) ANTES da página ser enviada ao usuário.
+// É o que faz o preview em redes sociais funcionar.
+
+export async function getServerSideProps(context) {
+  const { uid } = context.query;
+
+  if (!uid) {
+    return { props: { profile: null, banners: [] } };
+  }
+
+  try {
+    const db = getDatabase();
+    
+    // --- 1. Buscar os dados do perfil ---
+    // Busca em /usuarios/{uid}
+    const userRef = ref(db, `usuarios/${uid}`);
+    const userSnapshot = await get(userRef);
+
+    if (!userSnapshot.exists()) {
+      // Se o perfil não existe, não há nada para mostrar.
+      return { props: { profile: null, banners: [] } };
+    }
+    
+    const profile = userSnapshot.val();
+
+    // --- 2. Buscar os Banners ---
+    // Esta é a ESTRUTURA 2 (a que você pediu)
+    // Ela busca TODOS os banners e filtra pelo 'autor' == uid
+    const bannersRef = ref(db, "banners");
+    const bannersQuery = query(bannersRef, orderByChild("autor"), equalTo(uid));
+    const bannersSnapshot = await get(bannersQuery);
+
+    let bannersList = [];
+    if (bannersSnapshot.exists()) {
+      // Converte o objeto de banners em um array
+      bannersSnapshot.forEach((childSnapshot) => {
+        bannersList.push({
+          id: childSnapshot.key,
+          ...childSnapshot.val(),
+        });
+      });
+      // Inverte a lista para mostrar os mais recentes primeiro
+      bannersList.reverse(); 
+    }
+
+    // --- 3. Enviar os dados para a página ---
+    return {
+      props: {
+        profile: profile,
+        banners: bannersList,
+      },
+    };
+
+  } catch (error) {
+    console.error("Erro ao buscar dados no Firebase (SSR):", error);
+    return { props: { profile: null, banners: [] } };
+  }
+}
+
+
+    
