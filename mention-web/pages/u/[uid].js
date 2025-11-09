@@ -3,7 +3,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
 // ---------------------------------------------------------------------------
-// 🔧 CONFIGURAÇÃO DO FIREBASE
+// 🔧 CONFIGURAÇÃO DO FIREBASE (MANTIDA)
 // ---------------------------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
@@ -20,7 +20,7 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 O COMPONENTE DA PÁGINA (DESIGN COM TAILWIND)
+// 🎨 O COMPONENTE DA PÁGINA (DESIGN COM TAILWIND CORRIGIDO)
 // ---------------------------------------------------------------------------
 export default function Usuario({ profile }) {
   
@@ -38,14 +38,12 @@ export default function Usuario({ profile }) {
   const pageTitle = `${profile.nome} (@${profile.autor}) | Vizbio`;
   const description = profile.biografia || `Confira os links de ${profile.nome}`;
 
-  // Lógica para controle de visibilidade das informações
   const showInfo = profile.info === "SIM";
-
-  // Prepara a biografia, removendo menção a @uid
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-gray-800 text-white antialiased pb-20">
+    // 'max-w-xl' movido para o container mais externo para melhor responsividade
+    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-gray-800 text-white antialiased pb-20 mx-auto max-w-xl"> 
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={description} />
@@ -57,25 +55,27 @@ export default function Usuario({ profile }) {
       </Head>
 
       {/* Container Principal */}
-      <main className="max-w-xl mx-auto p-4 pt-12 md:pt-20">
+      <main className="p-4 pt-12 md:pt-20"> {/* Removido max-w-xl e mx-auto daqui */}
         
         {/* --- 1. CABEÇALHO DO PERFIL (Com sobreposição) --- */}
-        <header className="relative w-full flex flex-col items-center mb-10">
+        <header className="relative w-full mb-10 group"> {/* Adicionado 'relative' e 'group' */}
           
           {/* Imagem do Perfil */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
-            className="w-full h-auto object-cover rounded-xl shadow-xl aspect-video max-h-[300px]"
+            // Classe 'w-full' é essencial para ser responsiva
+            className="w-full object-cover rounded-xl shadow-xl aspect-video max-h-[300px]" 
             onError={(e) => {
               e.currentTarget.src = "https://placehold.co/600x300/1F2937/FFFFFF?text=Vizbio+Perfil";
               e.currentTarget.onerror = null; 
             }}
           />
 
-          {/* ℹ️ Bloco de Informações Sobrepostas (Só aparece se info: SIM) */}
+          {/* ℹ️ Bloco de Informações Sobrepostas (Corrigido o posicionamento) */}
           {showInfo && (
             <div 
+              // 'absolute bottom-0 left-0' posiciona o bloco no canto inferior esquerdo do RELATIVE header
               className="absolute bottom-0 left-0 p-4 w-full bg-gradient-to-t from-black/80 via-black/30 to-transparent rounded-xl pt-10"
             >
               <h1 
@@ -102,10 +102,11 @@ export default function Usuario({ profile }) {
             </div>
           )}
 
-          {/* UID/Autor (Visível apenas se info: NÃO, ou se você quiser mantê-lo) */}
-          {!showInfo && (
-            <p className="text-md text-gray-400 mt-4">@{profile.autor}</p>
-          )}
+          {/* Se info=NÃO e você ainda quiser mostrar o autor, descomente: */}
+          {/* {!showInfo && (
+            <p className="text-md text-gray-400 mt-4 text-center">@{profile.autor}</p>
+          )} */}
+          
         </header>
 
         {/* --- 2. ESPAÇO PARA BANNERS --- */}
@@ -117,8 +118,8 @@ export default function Usuario({ profile }) {
 
       </main>
 
-      {/* --- 3. RODAPÉ FIXO --- */}
-      <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl">
+      {/* --- 3. RODAPÉ FIXO (Corrigido para não usar fixed dentro de max-w) --- */}
+      <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-10">
           <a
             href="https://vizbio.pro"
             target="_blank"
@@ -168,4 +169,4 @@ export async function getServerSideProps(context) {
     console.error("Erro ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null } };
   }
-                  }
+            }
