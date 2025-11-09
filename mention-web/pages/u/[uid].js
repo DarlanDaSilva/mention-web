@@ -20,11 +20,12 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 O COMPONENTE DA PÁGINA (CORRIGIDO PARA RESPONSIVIDADE TOTAL)
+// 🎨 O COMPONENTE DA PÁGINA (CARD QUADRADO)
 // ---------------------------------------------------------------------------
 export default function Usuario({ profile }) {
   
   if (!profile) {
+    // Fundo padrão para erro
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         <Head>
@@ -41,11 +42,10 @@ export default function Usuario({ profile }) {
   const showInfo = profile.info === "SIM";
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
   
-  // Define a cor de fundo dinâmica para o restante do conteúdo
   const bgColor = profile.corFundo || 'bg-gray-900'; 
   
   return (
-    // REMOVIDO: max-w-xl e mx-auto daqui. O div principal deve ter 100% de largura.
+    // Removido o gradiente daqui, agora é apenas a cor de fundo (ou padrão)
     <div className={`min-h-screen w-full antialiased text-white pb-20 ${bgColor}`}> 
       <Head>
         <title>{pageTitle}</title>
@@ -58,22 +58,22 @@ export default function Usuario({ profile }) {
       </Head>
 
       {/* Container Principal */}
-      <main>
+      <main className="max-w-xl mx-auto p-4 pt-12 md:pt-20">
         
-        {/* --- 1. CAPA DE TELA CHEIA (Imagem de Fundo) --- */}
-        {/* Este header ocupa 100% da tela (100vh) */}
+        {/* --- 1. CAPA QUADRADA (250x250px) --- */}
+        {/* Usamos w-[250px] e h-[250px] para a dimensão fixa. */}
+        {/* mx-auto para centralizar o bloco na página. */}
         <header 
-          className="relative w-full h-screen overflow-hidden group" 
+          className="relative w-[250px] h-[250px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
         >
           
-          {/* Imagem do Perfil: COBRE A TELA INTEIRA (100% altura e largura) */}
+          {/* Imagem do Perfil: COBRE o container 250x250px */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
-            // w-full e h-full para preencher o header de 100vh
             className="w-full h-full object-cover object-center" 
             onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/600x1000/1F2937/FFFFFF?text=Vizbio+Perfil";
+              e.currentTarget.src = "https://placehold.co/250x250/1F2937/FFFFFF?text=Vizbio+Perfil";
               e.currentTarget.onerror = null; 
             }}
           />
@@ -81,11 +81,11 @@ export default function Usuario({ profile }) {
           {/* ℹ️ Bloco de Informações Sobrepostas */}
           {showInfo && (
             <div 
-              // Garante que o gradiente cubra toda a largura da viewport e a parte inferior
-              className="absolute inset-x-0 bottom-0 p-4 pt-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end min-h-[50vh]"
+              // Ajustado para o tamanho menor do container
+              className="absolute inset-x-0 bottom-0 p-3 pt-12 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end min-h-[50%]"
             >
               <h1 
-                className="text-3xl md:text-4xl font-bold flex items-end gap-2 leading-tight"
+                className="text-xl font-bold flex items-end gap-1 leading-tight"
                 style={{ color: profile.corNome || '#FFFFFF' }}
               >
                 {profile.nome}
@@ -94,12 +94,12 @@ export default function Usuario({ profile }) {
                     src="https://i.ibb.co/L5k61N6/icons8-verificado-50.png"
                     alt="Verificado"
                     title="Verificado"
-                    className="w-7 h-7 mb-1"
+                    className="w-5 h-5 mb-0.5"
                   />
                 )}
               </h1>
               <p 
-                className="text-base md:text-lg mt-2 leading-snug"
+                className="text-sm mt-1 leading-snug"
                 style={{ color: profile.corBiografia || '#FFFFFF' }}
               >
                 {cleanBiografia}
@@ -110,11 +110,11 @@ export default function Usuario({ profile }) {
         </header>
 
         {/* --- 2. CONTEÚDO DA PÁGINA (BANNERS) --- */}
-        {/* Esta seção é o que fica abaixo da Capa de Tela Cheia. */}
-        <section className="py-10 md:py-12 space-y-4 px-4 max-w-xl mx-auto">
+        {/* Este conteúdo é o que aparece centralizado abaixo do card 250x250px. */}
+        <section className="py-10 md:py-12 space-y-4">
              <p className="text-center text-gray-500">
-                <span className="inline-block rotate-[15deg] origin-center text-4xl font-bold">
-                    Conteúdo abaixo da Capa
+                <span className="inline-block text-xl font-bold">
+                    Conteúdo abaixo do Card
                 </span>
             </p>
         </section>
@@ -170,5 +170,4 @@ export async function getServerSideProps(context) {
     console.error("Erro ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null } };
   }
-}
-  
+              }
