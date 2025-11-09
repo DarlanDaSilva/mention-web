@@ -5,8 +5,6 @@ import { getDatabase, ref, get, query, orderByChild, equalTo } from "firebase/da
 // ---------------------------------------------------------------------------
 // 🔧 CONFIGURAÇÃO DO FIREBASE (USE A SUA)
 // ---------------------------------------------------------------------------
-// Estas são as chaves do seu projeto antigo "Mention".
-// Se o VIZBIO estiver em um novo projeto, ATUALIZE-AS.
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -146,54 +144,52 @@ export default function Usuario({ profile, banners }) {
 }
 
 // ---------------------------------------------------------------------------
-// 🚀 SERVER-SIDE RENDERING (SSR)
+// 🚀 SERVER-SIDE RENDERING (SSR) - ONDE A BUSCA DE DADOS OCORRE
 // ---------------------------------------------------------------------------
-// Isto roda no servidor (na Vercel) ANTES da página ser enviada ao usuário.
-// É o que faz o preview em redes sociais funcionar.
-
 export async function getServerSideProps(context) {
+  // O 'uid' é capturado da URL (por exemplo, em /u/[uid].js)
   const { uid } = context.query;
 
   if (!uid) {
+    // Se não há UID na URL (ex: /u/), retorna vazio
     return { props: { profile: null, banners: [] } };
   }
 
   try {
     const db = getDatabase();
     
-    // --- 1. Buscar os dados do perfil ---
-    // Busca em /usuarios/{uid}
+    // --- 1. Buscar os dados do perfil (usuários/{uid}) ---
     const userRef = ref(db, `usuarios/${uid}`);
     const userSnapshot = await get(userRef);
 
     if (!userSnapshot.exists()) {
-      // Se o perfil não existe, não há nada para mostrar.
+      // Se o perfil não existe (motivo do erro "Perfil não encontrado")
+      console.error("ERRO SSR: Perfil de usuário não encontrado para o UID:", uid);
       return { props: { profile: null, banners: [] } };
     }
     
     const profile = userSnapshot.val();
 
-    // --- 2. Buscar os Banners ---
-    // Esta é a ESTRUTURA 2 (a que você pediu)
-    // Ela busca TODOS os banners e filtra pelo 'autor' == uid
+    // --- 2. Buscar os Banners associados a este autor (uid) ---
+    // Faz uma busca em toda a coleção 'banners' onde 'autor' é igual ao 'uid'
     const bannersRef = ref(db, "banners");
     const bannersQuery = query(bannersRef, orderByChild("autor"), equalTo(uid));
     const bannersSnapshot = await get(bannersQuery);
 
     let bannersList = [];
     if (bannersSnapshot.exists()) {
-      // Converte o objeto de banners em um array
+      // Converte o objeto de banners filtrados em um array
       bannersSnapshot.forEach((childSnapshot) => {
         bannersList.push({
           id: childSnapshot.key,
           ...childSnapshot.val(),
         });
       });
-      // Inverte a lista para mostrar os mais recentes primeiro
+      // Inverte a lista para mostrar os banners mais recentes primeiro
       bannersList.reverse(); 
     }
 
-    // --- 3. Enviar os dados para a página ---
+    // --- 3. Enviar os dados para o componente de página ---
     return {
       props: {
         profile: profile,
@@ -202,10 +198,9 @@ export async function getServerSideProps(context) {
     };
 
   } catch (error) {
-    console.error("Erro ao buscar dados no Firebase (SSR):", error);
+    // Loga qualquer erro de Firebase (rede, regras, etc.)
+    console.error("Erro fatal ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null, banners: [] } };
   }
-}
-
-
-    
+            }
+  
