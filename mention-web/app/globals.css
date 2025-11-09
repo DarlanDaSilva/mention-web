@@ -20,6 +20,11 @@
 }
 
 body {
+  /* CORREÇÃO ADICIONADA AQUI */
+  margin: 0; 
+  padding: 0;
+  /* FIM DA CORREÇÃO */
+  
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
