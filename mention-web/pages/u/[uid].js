@@ -20,12 +20,11 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 O COMPONENTE DA PÁGINA (TELA CHEIA E COR DE FUNDO)
+// 🎨 O COMPONENTE DA PÁGINA (CORRIGIDO PARA RESPONSIVIDADE TOTAL)
 // ---------------------------------------------------------------------------
 export default function Usuario({ profile }) {
   
   if (!profile) {
-    // Fundo padrão para erro
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         <Head>
@@ -42,17 +41,12 @@ export default function Usuario({ profile }) {
   const showInfo = profile.info === "SIM";
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
   
-  // Define a cor de fundo (se corFundo existir, usa ela, senão usa o gradiente padrão)
-  const backgroundStyle = profile.corFundo 
-    ? { backgroundColor: profile.corFundo, minHeight: '100vh' }
-    : {}; // Se não tiver, o Tailwind usará o fundo definido abaixo
-
+  // Define a cor de fundo dinâmica para o restante do conteúdo
+  const bgColor = profile.corFundo || 'bg-gray-900'; 
+  
   return (
-    // Aplica a cor de fundo dinâmica. Se não houver, usa o gradiente do Tailwind.
-    <div 
-      className={`w-full antialiased pb-20 mx-auto max-w-xl ${!profile.corFundo ? 'bg-gradient-to-b from-gray-900 to-gray-800' : ''}`}
-      style={backgroundStyle}
-    > 
+    // REMOVIDO: max-w-xl e mx-auto daqui. O div principal deve ter 100% de largura.
+    <div className={`min-h-screen w-full antialiased text-white pb-20 ${bgColor}`}> 
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={description} />
@@ -64,17 +58,20 @@ export default function Usuario({ profile }) {
       </Head>
 
       {/* Container Principal */}
-      <main className="p-0">
+      <main>
         
-        {/* --- 1. CABEÇALHO DO PERFIL (IMAGEM 100% TELA) --- */}
-        <header className="relative w-full group overflow-hidden">
+        {/* --- 1. CAPA DE TELA CHEIA (Imagem de Fundo) --- */}
+        {/* Este header ocupa 100% da tela (100vh) */}
+        <header 
+          className="relative w-full h-screen overflow-hidden group" 
+        >
           
-          {/* Imagem do Perfil: h-screen (100vh) e w-screen (100vw) */}
+          {/* Imagem do Perfil: COBRE A TELA INTEIRA (100% altura e largura) */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
-            // CLASSES CRUCIAIS: Define a altura total da viewport (h-[100vh])
-            className="w-full h-screen object-cover object-center" 
+            // w-full e h-full para preencher o header de 100vh
+            className="w-full h-full object-cover object-center" 
             onError={(e) => {
               e.currentTarget.src = "https://placehold.co/600x1000/1F2937/FFFFFF?text=Vizbio+Perfil";
               e.currentTarget.onerror = null; 
@@ -84,7 +81,7 @@ export default function Usuario({ profile }) {
           {/* ℹ️ Bloco de Informações Sobrepostas */}
           {showInfo && (
             <div 
-              // Garante que o gradiente cubra toda a largura da viewport
+              // Garante que o gradiente cubra toda a largura da viewport e a parte inferior
               className="absolute inset-x-0 bottom-0 p-4 pt-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end min-h-[50vh]"
             >
               <h1 
@@ -112,12 +109,12 @@ export default function Usuario({ profile }) {
           
         </header>
 
-        {/* --- 2. ESPAÇO PARA BANNERS --- */}
-        {/* Este é o conteúdo que aparecerá abaixo da tela de capa. */}
-        <section className="py-10 md:py-12 space-y-4 px-4">
+        {/* --- 2. CONTEÚDO DA PÁGINA (BANNERS) --- */}
+        {/* Esta seção é o que fica abaixo da Capa de Tela Cheia. */}
+        <section className="py-10 md:py-12 space-y-4 px-4 max-w-xl mx-auto">
              <p className="text-center text-gray-500">
                 <span className="inline-block rotate-[15deg] origin-center text-4xl font-bold">
-                    Espaço para os banners no futuro
+                    Conteúdo abaixo da Capa
                 </span>
             </p>
         </section>
@@ -125,8 +122,7 @@ export default function Usuario({ profile }) {
       </main>
 
       {/* --- 3. RODAPÉ FIXO --- */}
-      {/* O rodapé agora flutua sobre a imagem quando o usuário chega ao final. */}
-      <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-10">
+      <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-20">
           <a
             href="https://vizbio.pro"
             target="_blank"
@@ -174,4 +170,5 @@ export async function getServerSideProps(context) {
     console.error("Erro ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null } };
   }
-        }
+}
+  
