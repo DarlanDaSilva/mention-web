@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
-import { getDatabase, ref, get, query, orderByChild, equalTo } from "firebase/database";
+// Importações limpas: removemos 'query', 'orderByChild', 'equalTo'
+import { getDatabase, ref, get } from "firebase/database"; 
 
 // ---------------------------------------------------------------------------
 // 🔧 CONFIGURAÇÃO DO FIREBASE (USE A SUA)
@@ -23,7 +24,8 @@ if (!getApps().length) {
 // ---------------------------------------------------------------------------
 // 🎨 O COMPONENTE DA PÁGINA (DESIGN COM TAILWIND)
 // ---------------------------------------------------------------------------
-export default function Usuario({ profile, banners }) {
+// Apenas recebe 'profile'
+export default function Usuario({ profile }) {
   
   // 1. Se o usuário não for encontrado
   if (!profile) {
@@ -94,34 +96,11 @@ export default function Usuario({ profile, banners }) {
           )}
         </header>
 
-        {/* --- 2. LISTA DE BANNERS --- */}
+        {/* --- 2. LISTA DE BANNERS (REMOVIDA PARA TESTE) --- */}
         <section className="mt-10 md:mt-12 space-y-4">
-          {banners.length > 0 ? (
-            banners.map((banner) => (
-              <a
-                key={banner.id}
-                href={banner.linkUrl}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                className="block w-full rounded-xl overflow-hidden shadow-lg transition-transform duration-300 ease-out hover:scale-[1.03] focus:scale-[1.03] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                <img
-                  src={banner.imageUrl}
-                  alt="Banner"
-                  className="w-full h-auto object-cover"
-                  // Fallback para um banner placeholder
-                  onError={(e) => {
-                    e.currentTarget.src = "https://placehold.co/600x200/374151/FFFFFF?text=Banner+Inv%C3%A1lido";
-                    e.currentTarget.onerror = null;
-                  }}
-                />
-              </a>
-            ))
-          ) : (
             <p className="text-center text-gray-500">
-              Nenhum banner encontrado.
+              *Teste de perfil sem banners*
             </p>
-          )}
         </section>
 
         {/* --- 3. RODAPÉ --- */}
@@ -144,63 +123,40 @@ export default function Usuario({ profile, banners }) {
 }
 
 // ---------------------------------------------------------------------------
-// 🚀 SERVER-SIDE RENDERING (SSR) - ONDE A BUSCA DE DADOS OCORRE
+// 🚀 SERVER-SIDE RENDERING (SSR) - SOMENTE PERFIL
 // ---------------------------------------------------------------------------
 export async function getServerSideProps(context) {
-  // O 'uid' é capturado da URL (por exemplo, em /u/[uid].js)
   const { uid } = context.query;
 
+  // Se não houver UID, não há perfil para buscar
   if (!uid) {
-    // Se não há UID na URL (ex: /u/), retorna vazio
-    return { props: { profile: null, banners: [] } };
+    return { props: { profile: null } };
   }
 
   try {
     const db = getDatabase();
     
-    // --- 1. Buscar os dados do perfil (usuários/{uid}) ---
-    const userRef = ref(db, `usuarios/${uid}`);
-    const userSnapshot = await get(userRef);
+    // --- 1. Buscar os dados do perfil (usuarios/{uid}) ---
+    // Usamos a sintaxe antiga que comprovadamente funciona para isolar o problema
+    const userSnapshot = await get(ref(db, "usuarios/" + uid));
 
     if (!userSnapshot.exists()) {
-      // Se o perfil não existe (motivo do erro "Perfil não encontrado")
-      console.error("ERRO SSR: Perfil de usuário não encontrado para o UID:", uid);
-      return { props: { profile: null, banners: [] } };
+      console.error("ERRO SSR: Perfil não encontrado ou acesso negado. UID:", uid);
+      return { props: { profile: null } };
     }
     
     const profile = userSnapshot.val();
 
-    // --- 2. Buscar os Banners associados a este autor (uid) ---
-    // Faz uma busca em toda a coleção 'banners' onde 'autor' é igual ao 'uid'
-    const bannersRef = ref(db, "banners");
-    const bannersQuery = query(bannersRef, orderByChild("autor"), equalTo(uid));
-    const bannersSnapshot = await get(bannersQuery);
-
-    let bannersList = [];
-    if (bannersSnapshot.exists()) {
-      // Converte o objeto de banners filtrados em um array
-      bannersSnapshot.forEach((childSnapshot) => {
-        bannersList.push({
-          id: childSnapshot.key,
-          ...childSnapshot.val(),
-        });
-      });
-      // Inverte a lista para mostrar os banners mais recentes primeiro
-      bannersList.reverse(); 
-    }
-
-    // --- 3. Enviar os dados para o componente de página ---
+    // --- 2. Enviar os dados para a página ---
     return {
       props: {
         profile: profile,
-        banners: bannersList,
+        // Banners foram removidos daqui
       },
     };
 
   } catch (error) {
-    // Loga qualquer erro de Firebase (rede, regras, etc.)
-    console.error("Erro fatal ao buscar dados no Firebase (SSR):", error);
-    return { props: { profile: null, banners: [] } };
+    console.error("Erro ao buscar dados no Firebase (SSR):", error);
+    return { props: { profile: null } };
   }
-            }
-  
+}
