@@ -2,20 +2,22 @@
  * Esta é a sua página inicial (Landing Page) para vizbio.pro
  * Caminho: /page.tsx (ou /app/page.tsx)
  * * Objetivo: Apresentar o Vizbio e fazer o usuário baixar o app Android.
- * * Estamos usando SVGs inline para ícones, então não são necessárias 
- * bibliotecas como 'lucide-react'.
+ * * Este é um "Server Component" (sem "use client"), para performance máxima.
  */
-
-"use client"; // <-- ESTA É A CORREÇÃO!
 
 import type { Metadata } from 'next';
 
 // Metadados para SEO (Google) e compartilhamento (WhatsApp)
-// AVISO: "use client" e "export const metadata" não podem ser usados no mesmo arquivo.
-// Vamos mover os Metadados para o layout.tsx se ele existir,
-// ou simplesmente remover por agora para fazer o build funcionar.
-// Para este arquivo, vamos focar em fazer o build passar.
-// A melhor prática é ter o 'metadata' no /app/layout.tsx
+export const metadata: Metadata = {
+  title: 'Vizbio.pro - Sua Bio, Mais Visual',
+  description: 'Crie um link-na-bio com banners clicáveis em vez de botões. Baixe o app e crie seu perfil visual em minutos.',
+  // Você pode adicionar uma imagem de compartilhamento aqui
+  openGraph: {
+    title: 'Vizbio.pro',
+    description: 'Sua bio, mais visual.',
+    images: ['/og-image.png'], // Coloque esta imagem na pasta /public
+  },
+};
 
 // --- Ícones SVG para uso na página ---
 
@@ -67,7 +69,9 @@ export default function Page() {
           <span className="text-2xl font-bold text-white">Vizbio.pro</span>
           {/* Botão de Download no Header */}
           <a
-            href="#download" // Leva para a seção de download
+            href="https://wa.me/5548920009313" // <-- LINK ATUALIZADO
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-white text-gray-900 font-medium py-2 px-5 rounded-lg shadow-md hover:bg-gray-200 transition-colors"
           >
             Baixar App
@@ -89,7 +93,9 @@ export default function Page() {
           </p>
           {/* Botão de Ação (CTA) */}
           <a
-            href="#download" // Leva para a seção de download
+            href="https://wa.me/5548920009313" // <-- LINK ATUALIZADO
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition-transform transform hover:scale-105"
           >
             <DownloadIcon className="mr-2 -ml-1" />
@@ -108,11 +114,7 @@ export default function Page() {
               src="https://placehold.co/1000x750/111827/7C3AED?text=Exemplo+de+Perfil+Vizbio&font=inter"
               alt="Exemplo de um perfil Vizbio com banners visuais"
               className="rounded-xl w-full"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://placehold.co/1000x750/111827/7C3AED?text=Exemplo+de+Perfil+Vizbio&font=inter';
-                target.alt = 'Exemplo de um perfil Vizbio';
-              }}
+              // A função 'onError' foi removida para corrigir o erro de build do Server Component
             />
           </div>
         </section>
@@ -152,7 +154,8 @@ export default function Page() {
                 <p className="text-gray-400">
                   Use seu link vizbio.pro no Instagram, TikTok,
                   ou em qualquer lugar.
-                </pre>
+                </p>
+                {/* A TAG <pre> QUE ESTAVA AQUI FOI REMOVIDA. AGORA ESTÁ CORRETO. */}
               </div>
 
             </div>
@@ -167,15 +170,14 @@ export default function Page() {
               Baixe o aplicativo Vizbio para Android e configure seu
               perfil visual hoje mesmo.
             </p>
-            {/* * IMPORTANTE: Troque o '#' pelo link da Google Play Store 
-              * assim que você publicar o app.
-            */}
             <a
-              href="#" // <-- TROCAR ESTE LINK
+              href="https://wa.me/5548920009313" // <-- LINK ATUALIZADO
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition-transform transform hover:scale-105"
             >
               <DownloadIcon className="mr-2 -ml-1" />
-              Baixar pela Google Play
+              Baixar App (WhatsApp)
             </a>
           </div>
         </section>
@@ -191,5 +193,3 @@ export default function Page() {
     </div>
   );
 }
-
-
