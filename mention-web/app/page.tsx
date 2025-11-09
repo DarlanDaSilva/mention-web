@@ -155,7 +155,9 @@ export default function Page() {
                 <p className="text-gray-400">
                   Use seu link vizbio.pro no Instagram, TikTok,
                   ou em qualquer lugar.
-                </pre>
+                </p>
+                {/* O ERRO ESTAVA AQUI - </pre> FOI REMOVIDO 
+                */}
               </div>
 
             </div>
@@ -194,3 +196,5 @@ export default function Page() {
     </div>
   );
 }
+
+
