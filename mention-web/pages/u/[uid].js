@@ -20,12 +20,11 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 O COMPONENTE DA PÁGINA (CARD QUADRADO)
+// 🎨 O COMPONENTE DA PÁGINA
 // ---------------------------------------------------------------------------
 export default function Usuario({ profile }) {
   
   if (!profile) {
-    // Fundo padrão para erro
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         <Head>
@@ -45,7 +44,6 @@ export default function Usuario({ profile }) {
   const bgColor = profile.corFundo || 'bg-gray-900'; 
   
   return (
-    // Removido o gradiente daqui, agora é apenas a cor de fundo (ou padrão)
     <div className={`min-h-screen w-full antialiased text-white pb-20 ${bgColor}`}> 
       <Head>
         <title>{pageTitle}</title>
@@ -61,13 +59,11 @@ export default function Usuario({ profile }) {
       <main className="max-w-xl mx-auto p-4 pt-12 md:pt-20">
         
         {/* --- 1. CAPA QUADRADA (250x250px) --- */}
-        {/* Usamos w-[250px] e h-[250px] para a dimensão fixa. */}
-        {/* mx-auto para centralizar o bloco na página. */}
         <header 
           className="relative w-[250px] h-[250px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
         >
           
-          {/* Imagem do Perfil: COBRE o container 250x250px */}
+          {/* Imagem do Perfil */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
@@ -81,7 +77,6 @@ export default function Usuario({ profile }) {
           {/* ℹ️ Bloco de Informações Sobrepostas */}
           {showInfo && (
             <div 
-              // Ajustado para o tamanho menor do container
               className="absolute inset-x-0 bottom-0 p-3 pt-12 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end min-h-[50%]"
             >
               <h1 
@@ -110,7 +105,6 @@ export default function Usuario({ profile }) {
         </header>
 
         {/* --- 2. CONTEÚDO DA PÁGINA (BANNERS) --- */}
-        {/* Este conteúdo é o que aparece centralizado abaixo do card 250x250px. */}
         <section className="py-10 md:py-12 space-y-4">
              <p className="text-center text-gray-500">
                 <span className="inline-block text-xl font-bold">
@@ -121,18 +115,22 @@ export default function Usuario({ profile }) {
 
       </main>
 
-      {/* --- 3. RODAPÉ FIXO --- */}
+      {/* --- 3. RODAPÉ FIXO (MODIFICADO) --- */}
       <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-20">
+          {/* Linha 1: Vizbio.pro Crie sua página de banners visuais */}
           <a
             href="https://vizbio.pro"
             target="_blank"
             rel="noopener noreferrer"
+            // Usei um span dentro do 'a' para estilizar o texto de forma diferente se necessário
             className="text-sm font-semibold text-white hover:text-blue-400 transition"
           >
-            Vizbio.pro
+            Vizbio.pro Crie sua página de banners visuais
           </a>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Crie sua página de banners visuais
+          
+          {/* Linha 2: © 2025 Vizbio.pro. Todos os direitos reservados. */}
+          <p className="text-xs text-gray-500 mt-1"> 
+            © 2025 Vizbio.pro. Todos os direitos reservados.
           </p>
       </footer>
     </div>
@@ -170,4 +168,4 @@ export async function getServerSideProps(context) {
     console.error("Erro ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null } };
   }
-              }
+            }
