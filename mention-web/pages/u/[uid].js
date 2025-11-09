@@ -44,7 +44,8 @@ export default function Usuario({ profile }) {
   const bgColor = profile.corFundo || 'bg-gray-900'; 
   
   return (
-    <div className={`min-h-screen w-full antialiased text-white pb-20 ${bgColor}`}> 
+    // Adicionei 'pb-[70px]' para garantir que o rodapé fixo não cubra o último conteúdo
+    <div className={`min-h-screen w-full antialiased text-white pb-[70px] ${bgColor}`}> 
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={description} />
@@ -63,7 +64,11 @@ export default function Usuario({ profile }) {
           className="relative w-[120px] h-[120px] mx-auto mb-10 overflow-hidden group rounded-xl shadow-xl" 
         >
           
-          {/* Imagem do Perfil */}
+          {/* Ajuste da Imagem:
+            - A imagem já estava com "w-full h-full object-cover object-center", 
+              o que garante que ela ocupe 100% da largura e altura do contêiner de 120x120px
+              e mantenha a proporção (cortando as bordas se necessário).
+          */}
           <img
             src={profile.foto}
             alt="Foto do perfil"
@@ -115,14 +120,16 @@ export default function Usuario({ profile }) {
 
       </main>
 
-      {/* --- 3. RODAPÉ FIXO (MODIFICADO) --- */}
+      {/* --- 3. RODAPÉ FIXO (NOVO CÓDIGO APLICADO) --- 
+        Removi o texto "Vizbio.pro Crie sua página de banners visuais" do corpo
+        da página e o movi para cá.
+      */}
       <footer className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-700 py-3 text-center shadow-2xl z-20">
           {/* Linha 1: Vizbio.pro Crie sua página de banners visuais */}
           <a
             href="https://vizbio.pro"
             target="_blank"
             rel="noopener noreferrer"
-            // Usei um span dentro do 'a' para estilizar o texto de forma diferente se necessário
             className="text-sm font-semibold text-white hover:text-blue-400 transition"
           >
             Vizbio.pro Crie sua página de banners visuais
@@ -168,4 +175,4 @@ export async function getServerSideProps(context) {
     console.error("Erro ao buscar dados no Firebase (SSR):", error);
     return { props: { profile: null } };
   }
-            }
+}
