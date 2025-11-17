@@ -160,38 +160,36 @@ export default function PerfilVizbio({ perfil }) {
           color: tema.corTexto
         }}>
           
-          {/* 1. FOTO (Agora no topo e centralizada) */}
+          {/* 1. FOTO */}
           <div style={{ marginBottom: 15 }}>
              <img 
               src={perfil.fotoUrl || tema.fotoPadrao} 
               alt={perfil.nome}
               style={{ 
-                width: 90, 
-                height: 90, 
+                width: 80,
+                height: 80, 
                 borderRadius: '50%', 
                 objectFit: 'cover',
-                backgroundColor: '#fff', // Fundo branco para ícones transparentes
-                border: `4px solid ${tema.corDestaque}`,
+                backgroundColor: '#fff', 
+                border: `3px solid ${tema.corDestaque}`,
                 boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-                padding: perfil.fotoUrl ? '0' : '8px'
+                padding: perfil.fotoUrl ? '0' : '6px'
               }}
             />
           </div>
 
-          {/* 2. NOME E FRASE (Embaixo da foto, menor e mais delicado) */}
-          <div style={{ marginBottom: 25 }}>
+          {/* 2. INFO REMETENTE */}
+          <div style={{ marginBottom: 20, lineHeight: '1.2' }}>
              <div style={{ 
                fontSize: '0.85rem', 
-               textTransform: 'uppercase', 
-               letterSpacing: '1px', 
-               opacity: 0.8,
-               marginBottom: '4px'
+               opacity: 0.9,
+               marginBottom: '2px'
              }}>
-               {tema.fraseIntro}
+               Mensagem de
              </div>
 
              <strong style={{ 
-               fontSize: '1.3rem', 
+               fontSize: '1.1rem', 
                color: tema.corTexto,
                textShadow: '0 1px 2px rgba(0,0,0,0.1)'
              }}>
@@ -203,18 +201,18 @@ export default function PerfilVizbio({ perfil }) {
             border: 0, 
             borderTop: `1px solid ${tema.corTexto}`, 
             opacity: 0.2, 
-            margin: '20px 40px' // Margem lateral para a linha não encostar nas bordas
+            margin: '15px 60px' 
           }} />
 
-          {/* 3. CONTEÚDO DO TEMA */}
-          <div style={{ fontSize: '3rem', margin: '10px 0' }}>
+          {/* 3. CONTEÚDO TEMÁTICO */}
+          <div style={{ fontSize: '2.5rem', margin: '10px 0' }}>
             {tema.icone}
           </div>
           
           <h1 style={{ 
             fontFamily: tema.fonte, 
-            fontSize: '2.8rem', 
-            margin: '0 0 20px 0',
+            fontSize: '2.5rem', 
+            margin: '0 0 15px 0',
             color: tema.corDestaque,
             textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
             lineHeight: '1.1'
@@ -223,8 +221,8 @@ export default function PerfilVizbio({ perfil }) {
           </h1>
 
           <p style={{ 
-            fontSize: '1.4rem', 
-            lineHeight: '1.6',
+            fontSize: '1.3rem', 
+            lineHeight: '1.5',
             fontWeight: '500',
             fontStyle: 'italic',
             opacity: 0.95
@@ -232,8 +230,33 @@ export default function PerfilVizbio({ perfil }) {
             "{mensagemFinal}"
           </p>
 
-          <div style={{ marginTop: 40, fontSize: '0.7rem', opacity: 0.6, letterSpacing: '1px' }}>
-            CRIADO COM VIZBIO
+          {/* 🆕 BOTÃO DISCRETO (Crie sua mensagem) */}
+          <div style={{ marginTop: 30 }}>
+            <a href="https://vizbio.pro" style={{ 
+              display: 'inline-block',
+              padding: '8px 20px',
+              border: `1px solid ${tema.corTexto}`,
+              borderRadius: '50px',
+              color: tema.corTexto,
+              textDecoration: 'none',
+              fontSize: '0.8rem',
+              fontWeight: '500',
+              opacity: 0.7,
+              transition: 'opacity 0.3s'
+            }}
+            // Adiciona efeito hover simples com JS inline
+            onMouseOver={(e) => e.target.style.opacity = '1'}
+            onMouseOut={(e) => e.target.style.opacity = '0.7'}
+            >
+              Crie sua mensagem agora
+            </a>
+          </div>
+
+          {/* 🔗 LINK VIZBIO (Texto sem estilo de link) */}
+          <div style={{ marginTop: 20, fontSize: '0.7rem', opacity: 0.6, letterSpacing: '1px' }}>
+            <a href="https://vizbio.pro" style={{ color: 'inherit', textDecoration: 'none' }}>
+              CRIADO COM VIZBIO
+            </a>
           </div>
 
         </div>
@@ -258,4 +281,4 @@ export async function getServerSideProps(context) {
   return {
     props: { perfil: perfilData },
   };
-            }
+}
