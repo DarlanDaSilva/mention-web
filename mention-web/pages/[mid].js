@@ -21,9 +21,8 @@ if (!getApps().length) {
 }
 const db = getDatabase(app);
 
-// 🎨 CONFIGURAÇÃO DOS TEMAS (COM SEUS ÍCONES NOVOS)
+// 🎨 CONFIGURAÇÃO DOS TEMAS
 const TEMAS = {
-  // --- DATAS COMEMORATIVAS ---
   natal: {
     titulo: "Feliz Natal!",
     fraseIntro: "Uma mensagem especial de",
@@ -57,8 +56,6 @@ const TEMAS = {
     mensagemPadrao: "Hoje é o seu dia! Muitas felicidades, saúde e anos de vida.",
     fotoPadrao: "https://img.icons8.com/3d-fluency/94/birthday--v1.png"
   },
-
-  // --- NOVOS TEMAS ---
   amor: {
     titulo: "Com Amor...",
     fraseIntro: "Com todo carinho, de",
@@ -131,7 +128,6 @@ export default function PerfilVizbio({ perfil }) {
         <meta name="description" content={`Mensagem de ${perfil.nome}`} />
         <meta property="og:title" content={`${tema.titulo} De: ${perfil.nome}`} />
         <meta property="og:description" content={mensagemFinal} />
-        {/* Usa a imagem escolhida ou a padrão do tema para o compartilhamento também */}
         <meta property="og:image" content={perfil.fotoUrl || tema.fotoPadrao} />
         
         <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Dancing+Script:wght@700&family=Merriweather:wght@700&family=Mountains+of+Christmas:wght@700&family=Oswald:wght@700&family=Pacifico&family=Righteous&display=swap" rel="stylesheet" />
@@ -164,56 +160,57 @@ export default function PerfilVizbio({ perfil }) {
           color: tema.corTexto
         }}>
           
-          {/* Frase de Introdução */}
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            gap: '10px',
-            marginBottom: 25 
-          }}>
-             <span style={{ 
-               fontSize: '1rem', 
+          {/* 1. FOTO (Agora no topo e centralizada) */}
+          <div style={{ marginBottom: 15 }}>
+             <img 
+              src={perfil.fotoUrl || tema.fotoPadrao} 
+              alt={perfil.nome}
+              style={{ 
+                width: 90, 
+                height: 90, 
+                borderRadius: '50%', 
+                objectFit: 'cover',
+                backgroundColor: '#fff', // Fundo branco para ícones transparentes
+                border: `4px solid ${tema.corDestaque}`,
+                boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                padding: perfil.fotoUrl ? '0' : '8px'
+              }}
+            />
+          </div>
+
+          {/* 2. NOME E FRASE (Embaixo da foto, menor e mais delicado) */}
+          <div style={{ marginBottom: 25 }}>
+             <div style={{ 
+               fontSize: '0.85rem', 
                textTransform: 'uppercase', 
                letterSpacing: '1px', 
-               opacity: 0.9 
+               opacity: 0.8,
+               marginBottom: '4px'
              }}>
                {tema.fraseIntro}
-             </span>
+             </div>
 
              <strong style={{ 
-               fontSize: '1.2rem', 
-               borderBottom: `2px solid ${tema.corDestaque}`,
-               paddingBottom: '2px'
+               fontSize: '1.3rem', 
+               color: tema.corTexto,
+               textShadow: '0 1px 2px rgba(0,0,0,0.1)'
              }}>
                {perfil.nome}
              </strong>
           </div>
 
-          {/* Foto ou Ícone do Tema */}
-          <div style={{ marginBottom: 10 }}>
-             <img 
-              src={perfil.fotoUrl || tema.fotoPadrao} 
-              alt={perfil.nome}
-              style={{ 
-                width: 100, 
-                height: 100, 
-                borderRadius: '50%', 
-                objectFit: 'cover', // Ajusta bem se for foto
-                backgroundColor: '#fff', // Fundo branco para os ícones ficarem visíveis
-                border: `4px solid ${tema.corDestaque}`,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                padding: perfil.fotoUrl ? '0' : '10px' // Se for ícone, dá um respiro interno
-              }}
-            />
-          </div>
+          <hr style={{ 
+            border: 0, 
+            borderTop: `1px solid ${tema.corTexto}`, 
+            opacity: 0.2, 
+            margin: '20px 40px' // Margem lateral para a linha não encostar nas bordas
+          }} />
 
-          {/* Ícone Decorativo Extra */}
+          {/* 3. CONTEÚDO DO TEMA */}
           <div style={{ fontSize: '3rem', margin: '10px 0' }}>
             {tema.icone}
           </div>
           
-          {/* Título */}
           <h1 style={{ 
             fontFamily: tema.fonte, 
             fontSize: '2.8rem', 
@@ -225,7 +222,6 @@ export default function PerfilVizbio({ perfil }) {
             {tema.titulo}
           </h1>
 
-          {/* Mensagem */}
           <p style={{ 
             fontSize: '1.4rem', 
             lineHeight: '1.6',
@@ -262,4 +258,4 @@ export async function getServerSideProps(context) {
   return {
     props: { perfil: perfilData },
   };
-}
+            }
