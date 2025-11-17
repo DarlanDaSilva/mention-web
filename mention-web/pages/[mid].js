@@ -232,7 +232,7 @@ export default function PerfilVizbio({ perfil }) {
 
           {/* 🆕 BOTÃO DISCRETO (Crie sua mensagem) */}
           <div style={{ marginTop: 30 }}>
-            <a href="https://vizbio.pro" style={{ 
+            <a href="https://vizbio.pro/criarmensagem" style={{ 
               display: 'inline-block',
               padding: '8px 20px',
               border: `1px solid ${tema.corTexto}`,
