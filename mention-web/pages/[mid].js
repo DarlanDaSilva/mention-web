@@ -2,7 +2,7 @@ import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 
-// 🔧 Suas credenciais do Firebase
+// 🔧 Configuração do Firebase (Igual ao anterior)
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
   authDomain: "mention-zstore.firebaseapp.com",
@@ -13,7 +13,6 @@ const firebaseConfig = {
   appId: "1:602263910318:web:5326dfc1b1e05c86dafa3f",
 };
 
-// 💡 Inicializa o Firebase
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
@@ -22,95 +21,150 @@ if (!getApps().length) {
 }
 const db = getDatabase(app);
 
-// -----------------------------------------------------------------
-// 1. A PÁGINA (O que o usuário vê)
-// -----------------------------------------------------------------
+// 🎨 CONFIGURAÇÃO DOS TEMAS
+// Aqui definimos as cores e fundos para cada chave do Firebase
+const TEMAS = {
+  natal: {
+    titulo: "Feliz Natal!",
+    fundo: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?q=80&w=1000&auto=format&fit=crop')", // Fundo de Natal
+    corTexto: "#ffffff",
+    corDestaque: "#ff3b3b", // Vermelho
+    icone: "🎄",
+    fonte: "'Mountains of Christmas', cursive", // Fonte especial
+    mensagemPadrao: "Que a magia do Natal ilumine sua vida e traga muita paz e alegria para você e sua família."
+  },
+  anonovo: {
+    titulo: "Feliz Ano Novo!",
+    fundo: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1467810563316-b5476525c0f9?q=80&w=1000&auto=format&fit=crop')", // Fogos
+    corTexto: "#ffffff",
+    corDestaque: "#ffd700", // Dourado
+    icone: "🥂",
+    fonte: "'Cinzel Decorative', cursive",
+    mensagemPadrao: "Que o novo ano traga 365 novas oportunidades de ser feliz. Muita prosperidade!"
+  },
+  aniversario: {
+    titulo: "Parabéns!",
+    fundo: "linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1530103862676-de3c9da59af7?q=80&w=1000&auto=format&fit=crop')", // Balões
+    corTexto: "#333333",
+    corDestaque: "#ff0090", // Rosa choque
+    icone: "🎂",
+    fonte: "'Pacifico', cursive",
+    mensagemPadrao: "Hoje é um dia especial! Desejo muitas felicidades, saúde e anos de vida."
+  },
+  padrao: {
+    titulo: "Olá!",
+    fundo: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+    corTexto: "#333333",
+    corDestaque: "#007bff", // Azul
+    icone: "✨",
+    fonte: "sans-serif",
+    mensagemPadrao: "Uma mensagem especial para você."
+  }
+};
+
 export default function PerfilVizbio({ perfil }) {
   
-  // Mensagem padrão definida por você
-  const mensagemNatal = "Que este Natal brilhe com alegria e que o ano-novo traga prosperidade para todos os seus dias. Boas festas!";
+  if (!perfil) return <h1 style={{textAlign:'center', marginTop: 50}}>Link não encontrado</h1>;
 
-  if (!perfil) {
-    return (
-      <>
-        <Head><title>Link não encontrado | Vizbio</title></Head>
-        <main style={{ padding: 20, textAlign: 'center' }}>
-          <h1>Link não encontrado</h1>
-        </main>
-      </>
-    );
-  }
+  // 1. Identifica o tema (se não tiver no firebase, usa o 'padrao')
+  // Normaliza para minúsculo para evitar erro (Natal vs natal)
+  const chaveTema = perfil.tema ? perfil.tema.toLowerCase() : 'padrao';
+  const tema = TEMAS[chaveTema] || TEMAS['padrao'];
 
-  const pageTitle = `Mensagem de ${perfil.nome}`;
+  // 2. Decide qual mensagem mostrar (do Firebase ou a padrão do tema)
+  const mensagemFinal = perfil.mensagem || tema.mensagemPadrao;
 
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
-        {/* Configuração para o WhatsApp mostrar a mensagem */}
-        <meta name="description" content={mensagemNatal} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={mensagemNatal} />
-        {/* Se tiver foto no firebase, usa ela, senão usa uma imagem de natal padrão */}
+        <title>{tema.titulo} - {perfil.nome}</title>
+        <meta name="description" content={`Mensagem de ${perfil.nome}`} />
+        <meta property="og:title" content={`${tema.titulo} De: ${perfil.nome}`} />
+        <meta property="og:description" content={mensagemFinal} />
         <meta property="og:image" content={perfil.fotoUrl || "https://i.ibb.co/v6K2KbWY/20251016-225434-0000.png"} />
+        
+        {/* Importando fontes bonitas do Google Fonts */}
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Mountains+of+Christmas:wght@700&family=Pacifico&display=swap" rel="stylesheet" />
       </Head>
 
       <main style={{ 
         minHeight: '100vh',
+        background: tema.fundo,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
-        background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
-        textAlign: 'center'
+        fontFamily: 'sans-serif'
       }}>
-        
+
+        {/* Cartão com efeito de vidro (Glassmorphism) */}
         <div style={{
-          background: 'white',
-          padding: '40px 20px',
-          borderRadius: '15px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+          background: 'rgba(255, 255, 255, 0.15)', // Transparente
+          backdropFilter: 'blur(10px)', // Desfoque atrás
+          WebkitBackdropFilter: 'blur(10px)',
+          padding: '40px 30px',
+          borderRadius: '20px',
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
           maxWidth: '500px',
-          width: '100%'
+          width: '100%',
+          textAlign: 'center',
+          color: tema.corTexto
         }}>
           
-          {/* Foto (opcional) */}
-          <img 
-            src={perfil.fotoUrl || "https://i.ibb.co/3c1vKJk/default-avatar.png"} 
-            alt={`Foto de ${perfil.nome}`}
-            style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 15 }}
-          />
+          {/* Foto do Usuário */}
+          <div style={{ marginBottom: 15 }}>
+            <img 
+              src={perfil.fotoUrl || "https://i.ibb.co/3c1vKJk/default-avatar.png"} 
+              alt={perfil.nome}
+              style={{ 
+                width: 90, 
+                height: 90, 
+                borderRadius: '50%', 
+                objectFit: 'cover', 
+                border: `4px solid ${tema.corDestaque}`,
+                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+              }}
+            />
+          </div>
           
-          {/* Nome da pessoa */}
+          {/* Nome */}
+          <h2 style={{ margin: 0, fontSize: '1.2rem', opacity: 0.9 }}>
+            {perfil.nome} lhe enviou:
+          </h2>
+
+          <hr style={{ border: 0, borderTop: `1px solid ${tema.corTexto}`, opacity: 0.3, margin: '20px 0' }} />
+
+          {/* Título do Tema e Ícone */}
+          <div style={{ fontSize: '3rem', marginBottom: 10 }}>
+            {tema.icone}
+          </div>
           <h1 style={{ 
-            margin: '0 0 10px 0', 
-            color: '#333',
-            fontSize: '1.8rem'
+            fontFamily: tema.fonte, 
+            fontSize: '2.5rem', 
+            margin: '0 0 20px 0',
+            color: tema.corDestaque,
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
           }}>
-            {perfil.nome}
+            {tema.titulo}
           </h1>
-          
-          <p style={{ color: '#888', fontSize: '0.9rem', marginTop: 0 }}>
-            Deseja a você:
-          </p>
 
-          <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '20px 0' }} />
-
-          {/* A MENSAGEM BONITA AQUI */}
+          {/* Mensagem */}
           <p style={{ 
-            fontSize: '1.4rem', 
-            lineHeight: '1.6', 
-            color: '#2c3e50',
-            fontFamily: 'Georgia, serif', // Fonte mais elegante para mensagem
-            fontStyle: 'italic'
+            fontSize: '1.3rem', 
+            lineHeight: '1.6',
+            fontWeight: '500'
           }}>
-            "{mensagemNatal}"
+            "{mensagemFinal}"
           </p>
 
-          <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '20px 0' }} />
-          
-          <small style={{ color: '#aaa' }}>Vizbio - Crie seu cartão digital</small>
+          <div style={{ marginTop: 30, fontSize: '0.8rem', opacity: 0.7 }}>
+            Criado com Vizbio
+          </div>
+
         </div>
 
       </main>
@@ -118,9 +172,6 @@ export default function PerfilVizbio({ perfil }) {
   );
 }
 
-// -----------------------------------------------------------------
-// 2. BUSCA DE DADOS (Server Side)
-// -----------------------------------------------------------------
 export async function getServerSideProps(context) {
   const { mid } = context.params;
   let perfilData = null;
@@ -128,17 +179,12 @@ export async function getServerSideProps(context) {
   try {
     const perfilRef = ref(db, `mensagens/${mid}`);
     const snapshot = await get(perfilRef);
-
-    if (snapshot.exists()) {
-      perfilData = snapshot.val();
-    }
+    if (snapshot.exists()) perfilData = snapshot.val();
   } catch (error) {
-    console.error("Erro ao buscar no Firebase:", error);
+    console.error("Erro Firebase:", error);
   }
 
   return {
-    props: {
-      perfil: perfilData,
-    },
+    props: { perfil: perfilData },
   };
-                                           }
+            }
