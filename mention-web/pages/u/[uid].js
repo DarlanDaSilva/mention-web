@@ -20,7 +20,7 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 ESTILOS PREMIUM (CSS NO JAVASCRIPT)
+// 🎨 ESTILOS PREMIUM (AJUSTADO)
 // ---------------------------------------------------------------------------
 const styles = {
   container: {
@@ -32,18 +32,18 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     color: '#1a1a1a',
-    paddingBottom: '80px', // Espaço para o footer não cobrir o conteúdo
+    paddingBottom: '80px',
     overflowX: 'hidden'
   },
   main: {
     width: '100%',
-    maxWidth: '480px', // Largura ideal para mobile
+    maxWidth: '480px',
     padding: '40px 20px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
   },
-  // --- HEADER PREMIUM ---
+  // --- HEADER ---
   header: {
     display: 'flex',
     flexDirection: 'column',
@@ -53,7 +53,6 @@ const styles = {
     width: '100%',
     position: 'relative'
   },
-  // Efeito de luz suave atrás da foto
   glowEffect: {
     position: 'absolute',
     top: '20px',
@@ -69,8 +68,7 @@ const styles = {
     marginBottom: '15px',
     width: '120px',
     height: '120px',
-    padding: '4px', // Espaço entre a foto e a borda colorida
-    // Gradiente Tech (Verde Vizbio + Azul Tech)
+    padding: '4px',
     background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)', 
     borderRadius: '50%',
     zIndex: 1,
@@ -82,18 +80,19 @@ const styles = {
     borderRadius: '50%',
     objectFit: 'cover',
     backgroundColor: '#fff',
-    border: '3px solid #ffffff', // Borda branca interna
+    border: '3px solid #ffffff',
     display: 'block'
   },
+  // 👇 AJUSTE: Verificado menor
   verifiedIcon: {
     position: 'absolute',
-    bottom: '0',
-    right: '0',
-    width: '32px', // Ícone um pouco maior
-    height: '32px',
+    bottom: '2px',
+    right: '2px',
+    width: '24px',  // <-- Diminuído para 24px
+    height: '24px', // <-- Diminuído para 24px
     backgroundColor: '#ffffff',
     borderRadius: '50%',
-    padding: '3px', // Bordinha branca em volta do selo
+    padding: '2px',
     boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     display: 'flex',
     alignItems: 'center',
@@ -103,13 +102,14 @@ const styles = {
   name: {
     fontSize: '26px',
     fontWeight: '800',
-    margin: '0 0 2px 0', // Margem pequena embaixo
+    margin: '0 0 2px 0',
     letterSpacing: '-0.5px',
     color: '#0f172a'
   },
+  // 👇 AJUSTE: Usuário um pouco menor
   username: {
-    fontSize: '15px',
-    color: '#64748b', // Cinza azulado
+    fontSize: '14px', // <-- Diminuído para 14px
+    color: '#64748b',
     fontWeight: '600',
     marginBottom: '12px',
     opacity: 0.9
@@ -137,7 +137,7 @@ const styles = {
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
-    pointerEvents: 'none', // Permite clicar no fundo através dele
+    pointerEvents: 'none',
     zIndex: 50
   },
   footerBadge: {
@@ -171,7 +171,6 @@ const styles = {
 // ---------------------------------------------------------------------------
 export default function Usuario({ profile, banners }) {
   
-  // Proteção: Se não achar o perfil
   if (!profile) {
     return (
       <div style={{...styles.container, justifyContent: 'center'}}>
@@ -193,15 +192,12 @@ export default function Usuario({ profile, banners }) {
         <title>{pageTitle}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
-        {/* Meta tags sociais */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={cleanBiografia} />
         <meta property="og:image" content={profile.foto} />
       </Head>
 
-      {/* ANIMAÇÕES CSS (Injetadas na página) */}
       <style jsx global>{`
-        /* Animação suave de entrada */
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(15px); }
           to { opacity: 1; transform: translateY(0); }
@@ -210,7 +206,6 @@ export default function Usuario({ profile, banners }) {
           animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
         
-        /* Estilo dos Banners com Hover */
         .banner-link {
           display: block;
           width: 100%;
@@ -225,7 +220,6 @@ export default function Usuario({ profile, banners }) {
           transform: translateZ(0); 
         }
         
-        /* Efeito quando passa o mouse/dedo */
         .banner-link:hover {
           transform: scale(1.03);
           box-shadow: 0 15px 30px rgba(0,0,0,0.1);
@@ -240,7 +234,6 @@ export default function Usuario({ profile, banners }) {
           object-fit: cover;
         }
 
-        /* Animação do pontinho verde no rodapé */
         @keyframes pulse {
           0% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.5); opacity: 0.6; }
@@ -254,10 +247,9 @@ export default function Usuario({ profile, banners }) {
       <div style={styles.container}>
         <main style={styles.main} className="animate-in">
           
-          {/* --- HEADER PREMIUM --- */}
+          {/* --- HEADER --- */}
           <header style={styles.header}>
             
-            {/* Brilho de fundo */}
             <div style={styles.glowEffect}></div>
 
             <div style={styles.avatarContainer}>
@@ -268,7 +260,6 @@ export default function Usuario({ profile, banners }) {
                 onError={(e) => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${profile.nome}&background=f3f4f6&color=333`; }}
               />
               
-              {/* Selo Verificado Oficial */}
               {profile.verify === "SIM" && (
                   <div style={styles.verifiedIcon}>
                      <img 
@@ -282,7 +273,6 @@ export default function Usuario({ profile, banners }) {
 
             <h1 style={styles.name}>{profile.nome}</h1>
             
-            {/* Usuário estilo @handle */}
             <span style={styles.username}>@{profile.autor}</span>
             
             {cleanBiografia && (
@@ -290,7 +280,7 @@ export default function Usuario({ profile, banners }) {
             )}
           </header>
 
-          {/* --- LISTA DE BANNERS --- */}
+          {/* --- BANNERS --- */}
           <section style={styles.bannersContainer}>
               {banners.length > 0 ? (
                   banners.map((banner) => (
@@ -313,7 +303,6 @@ export default function Usuario({ profile, banners }) {
                               />
                           ) : null}
                           
-                          {/* Fallback: Texto caso a imagem quebre */}
                           <div style={{
                               display: banner.imageUrl ? 'none' : 'flex',
                               height: '90px',
@@ -328,7 +317,6 @@ export default function Usuario({ profile, banners }) {
                       </a>
                   ))
               ) : (
-                  // Estado Vazio
                   <div style={{
                       padding: '40px 20px', 
                       border: '2px dashed #e2e8f0', 
@@ -359,17 +347,16 @@ export default function Usuario({ profile, banners }) {
 }
 
 // ---------------------------------------------------------------------------
-// 🚀 BACKEND (FILTRAGEM DE DADOS)
+// 🚀 BACKEND
 // ---------------------------------------------------------------------------
 export async function getServerSideProps(context) {
-  const { uid } = context.query; // Obtém o ID da URL
+  const { uid } = context.query;
 
   if (!uid) return { props: { profile: null, banners: [] } };
 
   try {
     const db = getDatabase();
 
-    // 1. BUSCAR DADOS DO USUÁRIO
     const userRef = ref(db, `usuarios/${uid}`);
     const userSnapshot = await get(userRef);
 
@@ -378,8 +365,6 @@ export async function getServerSideProps(context) {
     }
     const profile = JSON.parse(JSON.stringify(userSnapshot.val()));
 
-    // 2. BUSCAR TODOS OS BANNERS
-    // O sistema busca todos os banners na raiz "banners"
     const bannersRef = ref(db, `banners`);
     const bannersSnapshot = await get(bannersRef);
     
@@ -387,14 +372,11 @@ export async function getServerSideProps(context) {
 
     if (bannersSnapshot.exists()) {
        const allBanners = bannersSnapshot.val();
-       
-       // 3. FILTRAR: Apenas banners onde autor == UID da página
        filteredBanners = Object.entries(allBanners)
          .map(([key, value]) => ({ id: key, ...value }))
          .filter(banner => banner.autor === uid);
     }
 
-    // Serializa para JSON (Regra do Next.js)
     const bannersSafe = JSON.parse(JSON.stringify(filteredBanners));
 
     return {
@@ -408,5 +390,4 @@ export async function getServerSideProps(context) {
     console.error("Erro SSR:", error);
     return { props: { profile: null, banners: [] } };
   }
-            }
-                            
+}
