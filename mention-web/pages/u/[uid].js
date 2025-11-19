@@ -20,7 +20,7 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 ESTILOS (CSS MANUAL PARA GARANTIR O VISUAL)
+// 🎨 ESTILOS MANUAIS (CSS NO JAVASCRIPT)
 // ---------------------------------------------------------------------------
 const styles = {
   container: {
@@ -133,18 +133,17 @@ const styles = {
 };
 
 // ---------------------------------------------------------------------------
-// 🧩 O COMPONENTE PRINCIPAL
+// 🧩 O COMPONENTE
 // ---------------------------------------------------------------------------
-export default function Usuario({ profile, uid }) {
+export default function Usuario({ profile, banners }) {
   
-  // 1. Tratamento de Perfil Não Encontrado
   if (!profile) {
     return (
       <div style={{...styles.container, justifyContent: 'center'}}>
-        <Head><title>Perfil Não Encontrado | Vizbio</title></Head>
+        <Head><title>Perfil Não Encontrado</title></Head>
         <div style={{padding: 20, textAlign: 'center'}}>
-           <h1 style={{fontSize: '20px', marginBottom: '10px'}}>😕 Perfil Inexistente</h1>
-           <p style={{color: '#666'}}>Verifique o link e tente novamente.</p>
+           <h1>😕 Perfil Inexistente</h1>
+           <p>Verifique o link e tente novamente.</p>
         </div>
       </div>
     );
@@ -152,28 +151,14 @@ export default function Usuario({ profile, uid }) {
 
   const pageTitle = `${profile.nome} (@${profile.autor}) | Vizbio`;
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
-  
-  // 2. PROCESSAMENTO E FILTRAGEM DOS BANNERS
-  const banners = profile.banners ? Object.entries(profile.banners)
-    .map(([key, value]) => ({ 
-        id: key, 
-        imagem: value.imagemUrl, // Mapeando sua chave do Firebase
-        link: value.linkUrl,     // Mapeando sua chave do Firebase
-        autor: value.autor       // Necessário para o filtro
-    }))
-    // 🔥 AQUI ESTÁ O FILTRO QUE VOCÊ PEDIU 🔥
-    .filter((banner) => banner.autor === uid) 
-    : [];
 
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content={cleanBiografia || `Links de ${profile.nome}`} />
       </Head>
 
-      {/* CSS GLOBAL PARA ANIMAÇÕES (Hover e Entrada) */}
       <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(15px); }
@@ -182,7 +167,6 @@ export default function Usuario({ profile, uid }) {
         .animate-in {
           animation: fadeIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-        
         .banner-link {
           display: block;
           width: 100%;
@@ -194,24 +178,20 @@ export default function Usuario({ profile, uid }) {
           background-color: #f9fafb;
           text-decoration: none;
           position: relative;
-          /* Garante que a imagem não "vaze" das bordas */
           transform: translateZ(0); 
         }
-        
         .banner-link:hover {
           transform: scale(1.025);
           box-shadow: 0 12px 24px rgba(0,0,0,0.12);
           border-color: #e5e7eb;
           z-index: 10;
         }
-
         .banner-img {
           width: 100%;
           height: auto;
           display: block;
           object-fit: cover;
         }
-        
         @keyframes pulse {
           0% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.2); opacity: 0.7; }
@@ -225,7 +205,7 @@ export default function Usuario({ profile, uid }) {
       <div style={styles.container}>
         <main style={styles.main} className="animate-in">
           
-          {/* --- HEADER --- */}
+          {/* HEADER */}
           <header style={styles.header}>
             <div style={styles.avatarContainer}>
               <img
@@ -248,33 +228,32 @@ export default function Usuario({ profile, uid }) {
             )}
           </header>
 
-          {/* --- BANNERS --- */}
+          {/* BANNERS */}
           <section style={styles.bannersContainer}>
               {banners.length > 0 ? (
                   banners.map((banner) => (
                       <a 
                           key={banner.id}
-                          href={banner.link || '#'}
+                          href={banner.linkUrl || '#'} // Ajustado conforme seu print
                           target="_blank"
                           rel="noopener noreferrer"
                           className="banner-link"
                       >
-                          {banner.imagem ? (
+                          {banner.imageUrl ? ( // Ajustado para imageUrl conforme seu print
                               <img 
-                                  src={banner.imagem} 
-                                  alt="Link" 
+                                  src={banner.imageUrl} 
+                                  alt="Banner" 
                                   className="banner-img"
                                   onError={(e) => {
-                                      // Se a imagem quebrar, mostra um bloco cinza
                                       e.currentTarget.style.display = 'none';
                                       e.currentTarget.nextSibling.style.display = 'flex';
                                   }}
                               />
                           ) : null}
                           
-                          {/* Fallback invisível que aparece se a imagem quebrar ou não existir */}
+                          {/* Fallback se imagem falhar */}
                           <div style={{
-                              display: banner.imagem ? 'none' : 'flex',
+                              display: banner.imageUrl ? 'none' : 'flex',
                               height: '80px',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -282,23 +261,21 @@ export default function Usuario({ profile, uid }) {
                               color: '#9ca3af',
                               fontWeight: '500'
                           }}>
-                              Link sem imagem
+                              Ver Link
                           </div>
                       </a>
                   ))
               ) : (
-                  // Estado vazio elegante
                   <div style={{
                       padding: '40px 20px', 
                       border: '2px dashed #e5e7eb', 
                       borderRadius: '16px', 
                       textAlign: 'center', 
                       backgroundColor: '#f9fafb',
-                      width: '100%',
-                      boxSizing: 'border-box'
+                      width: '100%'
                   }}>
                       <p style={{color: '#9ca3af', margin: 0, fontSize: '14px'}}>
-                        Nenhum conteúdo disponível no momento.
+                        Nenhum conteúdo disponível.
                       </p>
                   </div>
               )}
@@ -306,14 +283,9 @@ export default function Usuario({ profile, uid }) {
 
         </main>
 
-        {/* --- FOOTER --- */}
+        {/* FOOTER */}
         <footer style={styles.footer}>
-            <a
-                href="https://vizbio.pro"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.footerBadge}
-            >
+            <a href="https://vizbio.pro" target="_blank" style={styles.footerBadge}>
                 <span style={styles.dot} className="pulse-dot"></span>
                 <span>Criado com <strong>Vizbio</strong></span>
             </a>
@@ -324,34 +296,54 @@ export default function Usuario({ profile, uid }) {
 }
 
 // ---------------------------------------------------------------------------
-// 🚀 SERVER SIDE PROPS
+// 🚀 BACKEND (AQUI É ONDE A MÁGICA DO FILTRO ACONTECE)
 // ---------------------------------------------------------------------------
 export async function getServerSideProps(context) {
   const { uid } = context.query;
 
-  if (!uid) return { props: { profile: null } };
+  if (!uid) return { props: { profile: null, banners: [] } };
 
   try {
     const db = getDatabase();
+
+    // 1. BUSCAR DADOS DO USUÁRIO (na pasta usuarios/UID)
     const userRef = ref(db, `usuarios/${uid}`);
     const userSnapshot = await get(userRef);
 
     if (!userSnapshot.exists()) {
-      return { props: { profile: null } };
+      return { props: { profile: null, banners: [] } };
     }
-    
     const profile = JSON.parse(JSON.stringify(userSnapshot.val()));
+
+    // 2. BUSCAR TODOS OS BANNERS (na pasta raiz 'banners')
+    const bannersRef = ref(db, `banners`);
+    const bannersSnapshot = await get(bannersRef);
+    
+    let filteredBanners = [];
+
+    if (bannersSnapshot.exists()) {
+       const allBanners = bannersSnapshot.val();
+       
+       // 3. FILTRAR: Só pega se banner.autor for igual ao UID da página
+       // Transforma o objeto {1: {...}, 2: {...}} em array
+       filteredBanners = Object.entries(allBanners)
+         .map(([key, value]) => ({ id: key, ...value }))
+         .filter(banner => banner.autor === uid);
+    }
+
+    // Serializa para JSON para evitar erro no Next.js
+    const bannersSafe = JSON.parse(JSON.stringify(filteredBanners));
 
     return {
       props: {
         profile,
-        uid // Enviamos o UID para o componente poder filtrar os banners
+        banners: bannersSafe
       },
     };
 
   } catch (error) {
     console.error("Erro SSR:", error);
-    return { props: { profile: null } };
+    return { props: { profile: null, banners: [] } };
   }
-            }
-      
+                              }
+                          
