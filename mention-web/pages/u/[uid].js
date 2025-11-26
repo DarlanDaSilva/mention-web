@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
+import { Fragment } from "react"; // Adicionado para lidar com a lista de elementos do texto
 
 // ---------------------------------------------------------------------------
 // 🔧 CONFIGURAÇÃO DO FIREBASE
@@ -83,13 +84,12 @@ const styles = {
     border: '3px solid #ffffff',
     display: 'block'
   },
-  // 👇 AJUSTE: Verificado menor
   verifiedIcon: {
     position: 'absolute',
     bottom: '2px',
     right: '2px',
-    width: '24px',  // <-- Diminuído para 24px
-    height: '24px', // <-- Diminuído para 24px
+    width: '24px',  
+    height: '24px', 
     backgroundColor: '#ffffff',
     borderRadius: '50%',
     padding: '2px',
@@ -106,9 +106,8 @@ const styles = {
     letterSpacing: '-0.5px',
     color: '#0f172a'
   },
-  // 👇 AJUSTE: Usuário um pouco menor
   username: {
-    fontSize: '14px', // <-- Diminuído para 14px
+    fontSize: '14px', 
     color: '#64748b',
     fontWeight: '600',
     marginBottom: '12px',
@@ -120,7 +119,8 @@ const styles = {
     lineHeight: '1.6',
     maxWidth: '95%',
     margin: 0,
-    fontWeight: '400'
+    fontWeight: '400',
+    whiteSpace: 'pre-wrap' // Permite quebras de linha normais também
   },
   // --- BANNERS ---
   bannersContainer: {
@@ -185,6 +185,23 @@ export default function Usuario({ profile, banners }) {
 
   const pageTitle = `${profile.nome} (@${profile.autor}) | Vizbio`;
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
+
+  // 👇 NOVA FUNÇÃO: Formata o texto para negrito entre asteriscos
+  const formatBio = (text) => {
+    if (!text) return null;
+    
+    // Divide o texto onde houver asteriscos (*)
+    const parts = text.split('*');
+    
+    return parts.map((part, index) => {
+      // Se o índice for ímpar (1, 3, 5...), é o texto que estava entre asteriscos
+      if (index % 2 === 1) {
+        return <strong key={index} style={{fontWeight: '700', color: '#0f172a'}}>{part}</strong>;
+      }
+      // Se for par, é texto normal
+      return <Fragment key={index}>{part}</Fragment>;
+    });
+  };
 
   return (
     <>
@@ -275,8 +292,11 @@ export default function Usuario({ profile, banners }) {
             
             <span style={styles.username}>@{profile.autor}</span>
             
+            {/* 👇 ATUALIZADO: Chama a função de formatação */}
             {cleanBiografia && (
-              <p style={styles.bio}>{cleanBiografia}</p>
+              <p style={styles.bio}>
+                {formatBio(cleanBiografia)}
+              </p>
             )}
           </header>
 
