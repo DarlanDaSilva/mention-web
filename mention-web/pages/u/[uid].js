@@ -1,10 +1,10 @@
 import Head from "next/head";
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
-import { Fragment } from "react"; // Adicionado para lidar com a lista de elementos do texto
+import { Fragment } from "react"; 
 
 // ---------------------------------------------------------------------------
-// 🔧 CONFIGURAÇÃO DO FIREBASE
+// 🔧 CONFIGURAÇÃO DO FIREBASE (MANTIDO)
 // ---------------------------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyBIMcVlRd0EOveyxu9ZWOYCeQ6CvceX3cg",
@@ -21,7 +21,7 @@ if (!getApps().length) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎨 ESTILOS PREMIUM (AJUSTADO)
+// 🎨 ESTILOS PREMIUM (MANTIDO)
 // ---------------------------------------------------------------------------
 const styles = {
   container: {
@@ -44,7 +44,6 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center'
   },
-  // --- HEADER ---
   header: {
     display: 'flex',
     flexDirection: 'column',
@@ -120,16 +119,14 @@ const styles = {
     maxWidth: '95%',
     margin: 0,
     fontWeight: '400',
-    whiteSpace: 'pre-wrap' // Permite quebras de linha normais também
+    whiteSpace: 'pre-wrap'
   },
-  // --- BANNERS ---
   bannersContainer: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     gap: '16px'
   },
-  // --- FOOTER ---
   footer: {
     position: 'fixed',
     bottom: '20px',
@@ -186,19 +183,14 @@ export default function Usuario({ profile, banners }) {
   const pageTitle = `${profile.nome} (@${profile.autor}) | Vizbio`;
   const cleanBiografia = profile.biografia ? profile.biografia.replace(`Usuário @${profile.autor}, você pode apagar.`, '').trim() : '';
 
-  // 👇 NOVA FUNÇÃO: Formata o texto para negrito entre asteriscos
   const formatBio = (text) => {
     if (!text) return null;
-    
-    // Divide o texto onde houver asteriscos (*)
     const parts = text.split('*');
     
     return parts.map((part, index) => {
-      // Se o índice for ímpar (1, 3, 5...), é o texto que estava entre asteriscos
       if (index % 2 === 1) {
         return <strong key={index} style={{fontWeight: '700', color: '#0f172a'}}>{part}</strong>;
       }
-      // Se for par, é texto normal
       return <Fragment key={index}>{part}</Fragment>;
     });
   };
@@ -292,7 +284,6 @@ export default function Usuario({ profile, banners }) {
             
             <span style={styles.username}>@{profile.autor}</span>
             
-            {/* 👇 ATUALIZADO: Chama a função de formatação */}
             {cleanBiografia && (
               <p style={styles.bio}>
                 {formatBio(cleanBiografia)}
@@ -367,7 +358,7 @@ export default function Usuario({ profile, banners }) {
 }
 
 // ---------------------------------------------------------------------------
-// 🚀 BACKEND
+// 🚀 BACKEND (COM ORDENAÇÃO)
 // ---------------------------------------------------------------------------
 export async function getServerSideProps(context) {
   const { uid } = context.query;
@@ -392,9 +383,20 @@ export async function getServerSideProps(context) {
 
     if (bannersSnapshot.exists()) {
        const allBanners = bannersSnapshot.val();
+       
+       // 1. FILTRA E MAPEA
        filteredBanners = Object.entries(allBanners)
          .map(([key, value]) => ({ id: key, ...value }))
          .filter(banner => banner.autor === uid);
+       
+       // 2. ORDENA PELA POSIÇÃO (posicao: 1, 2, 3...)
+       filteredBanners.sort((a, b) => {
+           // Se a posição for undefined/null, atribui 999 para ir para o final
+           const posA = a.posicao ? parseInt(a.posicao) : 999;
+           const posB = b.posicao ? parseInt(b.posicao) : 999;
+
+           return posA - posB;
+       });
     }
 
     const bannersSafe = JSON.parse(JSON.stringify(filteredBanners));
@@ -410,4 +412,5 @@ export async function getServerSideProps(context) {
     console.error("Erro SSR:", error);
     return { props: { profile: null, banners: [] } };
   }
-}
+                  }
+                              
