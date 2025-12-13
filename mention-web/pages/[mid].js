@@ -21,8 +21,99 @@ if (!getApps().length) {
 }
 const db = getDatabase(app);
 
+// =======================================================
+// ⬇️ COMPONENTE DE NEVE (ADICIONADO) ⬇️
+// =======================================================
+
+const Snowfall = () => (
+    <>
+      {/* O style JSX é necessário para definir animações globais dentro do Next.js */}
+      <style jsx global>{`
+        /* Definição da animação de queda da neve */
+        @keyframes fall {
+          to {
+            transform: translateY(100vh);
+          }
+        }
+        
+        /* Definição do brilho da neve */
+        @keyframes fade {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 1; }
+        }
+
+        /* O div.snow é a neve real. Usamos box-shadow para criar dezenas de flocos. */
+        .snow-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none; /* Garante que a neve não atrapalhe a interação */
+          z-index: 5; /* Garante que a neve fique sobre o fundo, mas abaixo do cartão */
+        }
+        
+        .snow {
+          position: absolute;
+          width: 3px;
+          height: 3px;
+          background: #ffffff;
+          border-radius: 50%;
+          opacity: 0.9;
+          animation: 
+            fall 15s linear infinite,
+            fade 5s ease-in-out infinite alternate;
+          
+          /* Cria a ilusão de dezenas de flocos usando múltiplas sombras */
+          box-shadow: 
+            /* flocos pequenos e rápidos */
+            100px 300px 0 0 #fff, 150px 100px 0 0 #fff, 50px 500px 0 0 #fff, 200px 200px 0 0 #fff, 300px 450px 0 0 #fff, 400px 150px 0 0 #fff, 500px 350px 0 0 #fff, 600px 50px 0 0 #fff, 700px 250px 0 0 #fff, 800px 400px 0 0 #fff,
+            /* flocos maiores e mais lentos (usando blur e spread maior) */
+            250px 150px 2px 2px rgba(255,255,255,0.8), 550px 450px 2px 2px rgba(255,255,255,0.8), 850px 100px 2px 2px rgba(255,255,255,0.8),
+            /* flocos mais longe (opacity menor) */
+            50px 50px 0 0 rgba(255,255,255,0.5), 950px 550px 0 0 rgba(255,255,255,0.5), 450px 50px 0 0 rgba(255,255,255,0.5), 750px 350px 0 0 rgba(255,255,255,0.5);
+            
+          /* Atraso na animação para criar a sensação de profundidade e movimento contínuo */
+          animation-delay: -5s; 
+          
+          /* Flocus aleatórios adicionais para preencher a tela */
+          &:nth-child(2) {
+            left: 20%;
+            animation-delay: -10s;
+            box-shadow: 10px 10px 0 0 #fff, 200px 100px 0 0 #fff, 400px 300px 0 0 #fff;
+          }
+          &:nth-child(3) {
+            left: 50%;
+            animation-duration: 20s; /* Mais lento */
+            animation-delay: -3s;
+            box-shadow: 50px 50px 0 0 #fff, 300px 400px 0 0 #fff, 700px 200px 0 0 #fff;
+          }
+          &:nth-child(4) {
+            left: 80%;
+            animation-duration: 12s; /* Mais rápido */
+            animation-delay: -7s;
+            box-shadow: 150px 50px 0 0 #fff, 350px 350px 0 0 #fff, 650px 150px 0 0 #fff;
+          }
+        }
+      `}</style>
+      <div className="snow-overlay">
+        {/* Renderizamos apenas alguns elementos e o box-shadow faz o resto */}
+        <div className="snow"></div>
+        <div className="snow"></div>
+        <div className="snow"></div>
+        <div className="snow"></div>
+      </div>
+    </>
+);
+
+// =======================================================
+// ⬆️ COMPONENTE DE NEVE (ADICIONADO) ⬆️
+// =======================================================
+
 // 🎨 CONFIGURAÇÃO DOS TEMAS
 const TEMAS = {
+  // ... (o objeto TEMAS permanece o mesmo)
   natal: {
     titulo: "Feliz Natal!",
     fraseIntro: "Uma mensagem especial de",
@@ -120,6 +211,9 @@ export default function PerfilVizbio({ perfil }) {
   const chaveTema = perfil.tema ? perfil.tema.toLowerCase() : 'padrao';
   const tema = TEMAS[chaveTema] || TEMAS['padrao'];
   const mensagemFinal = perfil.mensagem || tema.mensagemPadrao;
+  
+  // ❄️ Variável para verificar se deve renderizar a neve
+  const isChristmasTheme = chaveTema === 'natal'; 
 
   return (
     <>
@@ -143,8 +237,13 @@ export default function PerfilVizbio({ perfil }) {
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
-        fontFamily: 'sans-serif'
+        fontFamily: 'sans-serif',
+        position: 'relative', // Adicionado para posicionar o Snowfall
+        zIndex: 1 // Adicionado para controle de camadas
       }}>
+        
+        {/* ❄️ RENDERIZAÇÃO CONDICIONAL DO EFEITO DE NEVE */}
+        {isChristmasTheme && <Snowfall />} 
 
         <div style={{
           background: 'rgba(255, 255, 255, 0.15)',
@@ -157,7 +256,8 @@ export default function PerfilVizbio({ perfil }) {
           maxWidth: '500px',
           width: '100%',
           textAlign: 'center',
-          color: tema.corTexto
+          color: tema.corTexto,
+          zIndex: 10 // Garante que o cartão fique acima da neve
         }}>
           
           {/* 1. FOTO */}
@@ -281,4 +381,4 @@ export async function getServerSideProps(context) {
   return {
     props: { perfil: perfilData },
   };
-}
+          }
