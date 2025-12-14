@@ -22,27 +22,25 @@ if (!getApps().length) {
 const db = getDatabase(app);
 
 // =======================================================
-// ⬇️ COMPONENTE DE NEVE (ADICIONADO) ⬇️
+// ⬇️ 1. COMPONENTE DE NEVE (TEMA NATAL) ⬇️
 // =======================================================
 
 const Snowfall = () => (
     <>
-      {/* O style JSX é necessário para definir animações globais dentro do Next.js */}
       <style jsx global>{`
-        /* Definição da animação de queda da neve */
+        /* Animação de Queda (Neve) */
         @keyframes fall {
           to {
             transform: translateY(100vh);
           }
         }
         
-        /* Definição do brilho da neve */
+        /* Animação de Brilho/Fade (Neve) */
         @keyframes fade {
           0%, 100% { opacity: 0.7; }
           50% { opacity: 1; }
         }
 
-        /* O div.snow é a neve real. Usamos box-shadow para criar dezenas de flocos. */
         .snow-overlay {
           position: absolute;
           top: 0;
@@ -50,8 +48,8 @@ const Snowfall = () => (
           width: 100%;
           height: 100%;
           overflow: hidden;
-          pointer-events: none; /* Garante que a neve não atrapalhe a interação */
-          z-index: 5; /* Garante que a neve fique sobre o fundo, mas abaixo do cartão */
+          pointer-events: none;
+          z-index: 5;
         }
         
         .snow {
@@ -67,17 +65,12 @@ const Snowfall = () => (
           
           /* Cria a ilusão de dezenas de flocos usando múltiplas sombras */
           box-shadow: 
-            /* flocos pequenos e rápidos */
             100px 300px 0 0 #fff, 150px 100px 0 0 #fff, 50px 500px 0 0 #fff, 200px 200px 0 0 #fff, 300px 450px 0 0 #fff, 400px 150px 0 0 #fff, 500px 350px 0 0 #fff, 600px 50px 0 0 #fff, 700px 250px 0 0 #fff, 800px 400px 0 0 #fff,
-            /* flocos maiores e mais lentos (usando blur e spread maior) */
             250px 150px 2px 2px rgba(255,255,255,0.8), 550px 450px 2px 2px rgba(255,255,255,0.8), 850px 100px 2px 2px rgba(255,255,255,0.8),
-            /* flocos mais longe (opacity menor) */
             50px 50px 0 0 rgba(255,255,255,0.5), 950px 550px 0 0 rgba(255,255,255,0.5), 450px 50px 0 0 rgba(255,255,255,0.5), 750px 350px 0 0 rgba(255,255,255,0.5);
             
-          /* Atraso na animação para criar a sensação de profundidade e movimento contínuo */
           animation-delay: -5s; 
           
-          /* Flocus aleatórios adicionais para preencher a tela */
           &:nth-child(2) {
             left: 20%;
             animation-delay: -10s;
@@ -85,20 +78,19 @@ const Snowfall = () => (
           }
           &:nth-child(3) {
             left: 50%;
-            animation-duration: 20s; /* Mais lento */
+            animation-duration: 20s;
             animation-delay: -3s;
             box-shadow: 50px 50px 0 0 #fff, 300px 400px 0 0 #fff, 700px 200px 0 0 #fff;
           }
           &:nth-child(4) {
             left: 80%;
-            animation-duration: 12s; /* Mais rápido */
+            animation-duration: 12s;
             animation-delay: -7s;
             box-shadow: 150px 50px 0 0 #fff, 350px 350px 0 0 #fff, 650px 150px 0 0 #fff;
           }
         }
       `}</style>
       <div className="snow-overlay">
-        {/* Renderizamos apenas alguns elementos e o box-shadow faz o resto */}
         <div className="snow"></div>
         <div className="snow"></div>
         <div className="snow"></div>
@@ -108,12 +100,69 @@ const Snowfall = () => (
 );
 
 // =======================================================
-// ⬆️ COMPONENTE DE NEVE (ADICIONADO) ⬆️
+// ⬇️ 2. NOVO COMPONENTE DE CORAÇÕES (TEMA AMOR) ⬇️
 // =======================================================
+
+const HeartFall = () => (
+    <>
+      <style jsx global>{`
+        /* Animação de subida e leve balanço do coração */
+        @keyframes lift {
+          0% { transform: translateY(100vh) scale(0.6) rotate(0deg); opacity: 0; }
+          50% { opacity: 0.8; }
+          100% { transform: translateY(-10vh) scale(1) rotate(20deg); opacity: 0; }
+        }
+
+        .heart-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 5;
+        }
+        
+        .heart {
+          position: absolute;
+          font-size: 20px;
+          color: #ff4d6d; /* Cor do tema amor */
+          animation-name: lift;
+          animation-timing-function: ease-out;
+          animation-iteration-count: infinite;
+          opacity: 0;
+          
+          /* Corações e suas animações individuais */
+          &:nth-child(1) { left: 10%; animation-duration: 18s; animation-delay: 0s; }
+          &:nth-child(2) { left: 30%; animation-duration: 15s; animation-delay: 2s; font-size: 25px; }
+          &:nth-child(3) { left: 50%; animation-duration: 22s; animation-delay: 4s; opacity: 0.5; }
+          &:nth-child(4) { left: 70%; animation-duration: 16s; animation-delay: 6s; font-size: 18px; }
+          &:nth-child(5) { left: 90%; animation-duration: 20s; animation-delay: 8s; }
+          &:nth-child(6) { left: 5%; animation-duration: 17s; animation-delay: 10s; font-size: 22px; }
+          &:nth-child(7) { left: 85%; animation-duration: 14s; animation-delay: 12s; opacity: 0.4; }
+        }
+      `}</style>
+      <div className="heart-overlay">
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+        <div className="heart">❤️</div>
+      </div>
+    </>
+);
+
+// =======================================================
+// ⬆️ NOVO COMPONENTE DE CORAÇÕES (TEMA AMOR) ⬆️
+// =======================================================
+
 
 // 🎨 CONFIGURAÇÃO DOS TEMAS
 const TEMAS = {
-  // ... (o objeto TEMAS permanece o mesmo)
+  // ... (Restante dos temas permanece inalterado)
   natal: {
     titulo: "Feliz Natal!",
     fraseIntro: "Uma mensagem especial de",
@@ -212,8 +261,9 @@ export default function PerfilVizbio({ perfil }) {
   const tema = TEMAS[chaveTema] || TEMAS['padrao'];
   const mensagemFinal = perfil.mensagem || tema.mensagemPadrao;
   
-  // ❄️ Variável para verificar se deve renderizar a neve
+  // ❄️ Variáveis para renderização condicional
   const isChristmasTheme = chaveTema === 'natal'; 
+  const isLoveTheme = chaveTema === 'amor'; // 💖 Novo tema
 
   return (
     <>
@@ -238,12 +288,15 @@ export default function PerfilVizbio({ perfil }) {
         justifyContent: 'center',
         padding: 20,
         fontFamily: 'sans-serif',
-        position: 'relative', // Adicionado para posicionar o Snowfall
-        zIndex: 1 // Adicionado para controle de camadas
+        position: 'relative',
+        zIndex: 1
       }}>
         
-        {/* ❄️ RENDERIZAÇÃO CONDICIONAL DO EFEITO DE NEVE */}
+        {/* ❄️ RENDERIZAÇÃO CONDICIONAL DA NEVE */}
         {isChristmasTheme && <Snowfall />} 
+
+        {/* 💖 RENDERIZAÇÃO CONDICIONAL DOS CORAÇÕES (NOVO) */}
+        {isLoveTheme && <HeartFall />} 
 
         <div style={{
           background: 'rgba(255, 255, 255, 0.15)',
@@ -257,7 +310,7 @@ export default function PerfilVizbio({ perfil }) {
           width: '100%',
           textAlign: 'center',
           color: tema.corTexto,
-          zIndex: 10 // Garante que o cartão fique acima da neve
+          zIndex: 10
         }}>
           
           {/* 1. FOTO */}
@@ -381,4 +434,4 @@ export async function getServerSideProps(context) {
   return {
     props: { perfil: perfilData },
   };
-          }
+}
